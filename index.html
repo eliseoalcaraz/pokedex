@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Pokedex - A comprehensive Pokemon catalogue">
+    <title>Pokédex - Pokemon Catalogue</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    
+    <!-- Favicon -->
+    <link rel="icon" href="assets/icons/pokeball.svg" type="image/svg+xml">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header__logo">
+                <img src="assets/icons/pokeball.svg" alt="Pokeball" class="header__icon">
+                <h1 class="header__title">Pokédex</h1>
+            </div>
+            <p class="header__subtitle">Explore the world of Pokémon</p>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Search and Filter Section -->
+            <section class="filters" aria-label="Search and filter Pokemon">
+                <div class="filters__search">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        class="filters__input" 
+                        placeholder="Search by name or ID..."
+                        aria-label="Search Pokemon"
+                    >
+                    <button class="filters__search-btn" id="searchBtn" aria-label="Search">
+                        <svg class="filters__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <path d="m21 21-4.35-4.35"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="filters__controls">
+                    <div class="filters__sort">
+                        <label for="sortSelect" class="filters__label">Sort by:</label>
+                        <select id="sortSelect" class="filters__select">
+                            <option value="id-asc">ID (Low to High)</option>
+                            <option value="id-desc">ID (High to Low)</option>
+                            <option value="name-asc">Name (A-Z)</option>
+                            <option value="name-desc">Name (Z-A)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filters__type">
+                        <label for="typeSelect" class="filters__label">Type:</label>
+                        <select id="typeSelect" class="filters__select">
+                            <option value="all">All Types</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Pokemon Cards Grid -->
+            <section class="pokemon-grid" id="pokemonGrid" aria-label="Pokemon list">
+                <!-- Cards will be dynamically inserted here -->
+            </section>
+
+            <!-- Loading Spinner -->
+            <div class="loader" id="loader" aria-label="Loading">
+                <div class="loader__spinner"></div>
+                <p class="loader__text">Loading Pokémon...</p>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="load-more" id="loadMoreContainer">
+                <button class="load-more__btn" id="loadMoreBtn">
+                    <span>Load More</span>
+                    <svg class="load-more__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 5v14M5 12l7 7 7-7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- No Results Message -->
+            <div class="no-results" id="noResults" hidden>
+                <img src="assets/icons/pokeball.svg" alt="" class="no-results__icon">
+                <h2 class="no-results__title">No Pokémon Found</h2>
+                <p class="no-results__text">Try adjusting your search or filters</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Pokemon Detail Modal -->
+    <div class="modal" id="pokemonModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+        <div class="modal__overlay" id="modalOverlay"></div>
+        <div class="modal__content" id="modalContent">
+            <button class="modal__close" id="modalClose" aria-label="Close modal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6 6 18M6 6l12 12"></path>
+                </svg>
+            </button>
+            
+            <!-- Modal content will be dynamically inserted -->
+            <div class="modal__body" id="modalBody">
+                <!-- Pokemon details will be loaded here -->
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="modal__nav">
+                <button class="modal__nav-btn modal__nav-btn--prev" id="prevPokemon" aria-label="Previous Pokemon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                    <span>Previous</span>
+                </button>
+                <button class="modal__nav-btn modal__nav-btn--next" id="nextPokemon" aria-label="Next Pokemon">
+                    <span>Next</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p class="footer__text">
+                Data provided by <a href="https://pokeapi.co/" target="_blank" rel="noopener">PokéAPI</a>
+            </p>
+            <p class="footer__copyright">© 2024 Pokédex Project</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript Files -->
+    <script src="js/utils.js"></script>
+    <script src="js/components/card.js"></script>
+    <script src="js/components/modal.js"></script>
+    <script src="js/components/filters.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
