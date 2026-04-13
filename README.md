@@ -42,12 +42,24 @@ pokedex/
 │   ├── components.css      # Component-specific styles
 │   └── responsive.css      # Media queries and responsive design
 ├── js/
-│   ├── main.js             # Main application logic
-│   ├── utils.js            # Utility functions and constants
-│   └── components/
-│       ├── card.js         # Pokemon card component
-│       ├── modal.js        # Detail modal component
-│       └── filters.js      # Search and filter component
+│   ├── main.js             # Module entry point
+│   ├── app/
+│   │   └── pokedex-app.js  # App controller / orchestration
+│   ├── components/
+│   │   ├── card.js         # Pokemon card rendering
+│   │   ├── filters.js      # Search, sort, and type filter UI
+│   │   └── modal.js        # Pokemon detail modal
+│   ├── config/
+│   │   └── constants.js    # Shared config and type metadata
+│   ├── services/
+│   │   └── pokemon-api.js  # API and caching layer
+│   ├── state/
+│   │   └── app-state.js    # App state factory
+│   └── utils/
+│       ├── cache.js        # Expiring in-memory cache
+│       ├── dom.js          # DOM helper utilities
+│       ├── formatters.js   # Formatting helpers
+│       └── helpers.js      # Search and general helpers
 ├── assets/
 │   ├── icons/
 │   │   └── pokeball.svg    # Pokeball icon
@@ -148,7 +160,7 @@ Then open `http://localhost:8000` in your browser.
 ## Customization
 
 ### Changing the Number of Pokemon per Load
-Edit `CONFIG.POKEMON_PER_PAGE` in `js/utils.js`:
+Edit `CONFIG.POKEMON_PER_PAGE` in `js/config/constants.js`:
 ```javascript
 const CONFIG = {
     POKEMON_PER_PAGE: 10,  // Change this value
