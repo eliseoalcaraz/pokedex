@@ -31,11 +31,13 @@
     const state = {
         allPokemon: [],           // All fetched Pokemon basic data
         detailedPokemon: new Map(), // Cached detailed Pokemon data
+        typeFilteredPokemon: new Map(), // Cached pokemon lists by type
         displayedPokemon: [],     // Currently displayed Pokemon (after filters)
         currentOffset: 0,         // Current pagination offset
         isLoading: false,         // Loading state
         hasMorePokemon: true,     // Whether there are more Pokemon to load
         currentPokemonId: null,   // Currently viewed Pokemon ID in modal
+        filterRequestId: 0,       // Tracks the latest async filter request
     };
 
     // ==========================================
@@ -91,6 +93,31 @@
         const url = `${CONFIG.API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`;
         const data = await fetchWithCache(url);
         return data.results;
+    }
+
+    /**
+     * Fetch all Pokemon that belong to a specific type
+     * @param {string} type - Pokemon type name
+     * @returns {Promise<Array>} Array of detailed Pokemon data
+     */
+    async function fetchPokemonByType(type) {
+        const url = `${CONFIG.API_BASE_URL}/type/${type.toLowerCase()}`;
+        const data = await fetchWithCache(url);
+
+        const uniquePokemon = new Map();
+
+        data.pokemon.forEach(({ pokemon }) => {
+            const id = extractPokemonId(pokemon.url);
+
+            // Keep the filter aligned with the supported dex range.
+            if (!id || id > CONFIG.MAX_POKEMON_ID || uniquePokemon.has(id)) {
+                return;
+            }
+
+            uniquePokemon.set(id, pokemon);
+        });
+
+        return fetchMultiplePokemonDetails(Array.from(uniquePokemon.values()));
     }
 
     /**
@@ -220,6 +247,22 @@
 
         renderPokemonCards(elements.grid, pokemonList, handleCardClick, append);
         updateLoadMoreVisibility();
+    }
+
+    /**
+     * Merge fetched pokemon into the loaded collection without duplicates
+     * @param {Array} pokemonList - Array of detailed Pokemon data
+     */
+    function mergePokemonIntoState(pokemonList) {
+        const mergedPokemon = new Map(
+            state.allPokemon.map(pokemon => [pokemon.id, pokemon])
+        );
+
+        pokemonList.forEach(pokemon => {
+            mergedPokemon.set(pokemon.id, pokemon);
+        });
+
+        state.allPokemon = Array.from(mergedPokemon.values());
     }
 
     // ==========================================
@@ -352,13 +395,46 @@
      * Handle filter changes
      * @param {Object} filterState - New filter state
      */
-    function handleFilterChange(filterState) {
-        // Apply filters and sort to all loaded Pokemon
-        const filtered = applyFiltersAndSort(state.allPokemon);
-        state.displayedPokemon = filtered;
+    async function handleFilterChange(filterState) {
+        const requestId = ++state.filterRequestId;
 
-        // Re-render the grid
-        displayPokemon(filtered, false);
+        try {
+            showLoading();
+
+            let sourcePokemon = state.allPokemon;
+
+            if (filterState.typeFilter !== 'all') {
+                const typeKey = filterState.typeFilter.toLowerCase();
+
+                if (!state.typeFilteredPokemon.has(typeKey)) {
+                    const typePokemon = await fetchPokemonByType(typeKey);
+                    state.typeFilteredPokemon.set(typeKey, typePokemon);
+                    mergePokemonIntoState(typePokemon);
+                }
+
+                sourcePokemon = state.typeFilteredPokemon.get(typeKey) || [];
+            }
+
+            const filtered = applyFiltersAndSort(sourcePokemon);
+
+            if (requestId !== state.filterRequestId) {
+                return;
+            }
+
+            state.displayedPokemon = filtered;
+            displayPokemon(filtered, false);
+        } catch (error) {
+            if (requestId !== state.filterRequestId) {
+                return;
+            }
+
+            console.error('Error applying filters:', error);
+            alert('Failed to apply filters. Please try again.');
+        } finally {
+            if (requestId === state.filterRequestId) {
+                hideLoading();
+            }
+        }
     }
 
     // ==========================================
