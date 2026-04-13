@@ -16,7 +16,7 @@
     function createTypeBadge(type) {
         return createElement('span', {
             className: `type-badge type-badge--${type.toLowerCase()}`
-        }, [type.toLowerCase()]);
+        }, [capitalize(type)]);
     }
 
     /**
