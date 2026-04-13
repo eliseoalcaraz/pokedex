@@ -12,7 +12,8 @@
         cache, 
         showElement, 
         hideElement, 
-        extractPokemonId 
+        extractPokemonId,
+        matchesPokemonSearch
     } = window.PokedexUtils;
     
     const { renderPokemonCards } = window.PokedexCard;
@@ -30,6 +31,7 @@
     
     const state = {
         allPokemon: [],           // All fetched Pokemon basic data
+        pokemonIndex: null,       // Full Pokemon index for global search
         detailedPokemon: new Map(), // Cached detailed Pokemon data
         typeFilteredPokemon: new Map(), // Cached pokemon lists by type
         displayedPokemon: [],     // Currently displayed Pokemon (after filters)
@@ -93,6 +95,19 @@
         const url = `${CONFIG.API_BASE_URL}/pokemon?limit=${limit}&offset=${offset}`;
         const data = await fetchWithCache(url);
         return data.results;
+    }
+
+    /**
+     * Fetch the full Pokemon index used for global search
+     * @returns {Promise<Array>} Array of basic Pokemon list items
+     */
+    async function fetchPokemonIndex() {
+        if (state.pokemonIndex) {
+            return state.pokemonIndex;
+        }
+
+        state.pokemonIndex = await fetchPokemonList(CONFIG.MAX_POKEMON_ID, 0);
+        return state.pokemonIndex;
     }
 
     /**
@@ -265,6 +280,41 @@
         state.allPokemon = Array.from(mergedPokemon.values());
     }
 
+    /**
+     * Resolve the source list for search so name and ID lookup work across the full dex.
+     * @param {Object} filterState - Current filter state
+     * @param {Array} sourcePokemon - Base Pokemon list after non-search filters
+     * @returns {Promise<Array>} Pokemon list ready for filtering and sorting
+     */
+    async function resolveSearchSource(filterState, sourcePokemon) {
+        if (!filterState.searchQuery || filterState.typeFilter !== 'all') {
+            return sourcePokemon;
+        }
+
+        const pokemonIndex = await fetchPokemonIndex();
+        const matchingPokemon = pokemonIndex.filter(pokemon => (
+            matchesPokemonSearch(pokemon, filterState.searchQuery)
+        ));
+
+        if (matchingPokemon.length === 0) {
+            return [];
+        }
+
+        const missingPokemon = matchingPokemon.filter(pokemon => {
+            const pokemonId = extractPokemonId(pokemon.url);
+            return !state.detailedPokemon.has(pokemonId);
+        });
+
+        if (missingPokemon.length > 0) {
+            const detailedPokemon = await fetchMultiplePokemonDetails(missingPokemon);
+            mergePokemonIntoState(detailedPokemon);
+        }
+
+        return matchingPokemon
+            .map(pokemon => state.detailedPokemon.get(extractPokemonId(pokemon.url)))
+            .filter(Boolean);
+    }
+
     // ==========================================
     // EVENT HANDLERS
     // ==========================================
@@ -381,7 +431,13 @@
 
             // Apply filters and display
             const filtered = applyFiltersAndSort(state.allPokemon);
-            displayPokemon(detailedPokemon, true);
+            state.displayedPokemon = filtered;
+
+            if (hasActiveFilters()) {
+                displayPokemon(filtered, false);
+            } else {
+                displayPokemon(detailedPokemon, true);
+            }
 
         } catch (error) {
             console.error('Error loading more Pokemon:', error);
@@ -415,7 +471,8 @@
                 sourcePokemon = state.typeFilteredPokemon.get(typeKey) || [];
             }
 
-            const filtered = applyFiltersAndSort(sourcePokemon);
+            const searchablePokemon = await resolveSearchSource(filterState, sourcePokemon);
+            const filtered = applyFiltersAndSort(searchablePokemon);
 
             if (requestId !== state.filterRequestId) {
                 return;
@@ -459,6 +516,7 @@
             state.currentOffset = 0;
 
             // Display Pokemon
+            state.displayedPokemon = detailedPokemon;
             displayPokemon(detailedPokemon);
 
         } catch (error) {

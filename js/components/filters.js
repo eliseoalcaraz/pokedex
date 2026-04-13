@@ -6,7 +6,7 @@
 (function() {
     'use strict';
 
-    const { POKEMON_TYPES, capitalize, debounce, CONFIG } = window.PokedexUtils;
+    const { POKEMON_TYPES, capitalize, debounce, CONFIG, matchesPokemonSearch } = window.PokedexUtils;
 
     // Filter state
     let filterState = {
@@ -124,15 +124,7 @@
         // Apply search filter
         if (filterState.searchQuery) {
             const query = filterState.searchQuery;
-            filtered = filtered.filter(pokemon => {
-                const name = pokemon.name.toLowerCase();
-                const id = String(pokemon.id);
-                const paddedId = String(pokemon.id).padStart(3, '0');
-                
-                return name.includes(query) || 
-                       id.includes(query) || 
-                       paddedId.includes(query);
-            });
+            filtered = filtered.filter(pokemon => matchesPokemonSearch(pokemon, query));
         }
 
         // Apply type filter

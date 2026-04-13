@@ -311,6 +311,69 @@ function extractPokemonId(input) {
 }
 
 /**
+ * Normalize a search query for consistent matching
+ * @param {string} query - Raw search query
+ * @returns {string} Normalized query
+ */
+function normalizeSearchQuery(query) {
+    return String(query || '').toLowerCase().trim();
+}
+
+/**
+ * Check whether a search query is numeric
+ * @param {string} query - Search query
+ * @returns {boolean} True when the query only contains digits
+ */
+function isNumericSearchQuery(query) {
+    return getNumericSearchId(query) !== null;
+}
+
+/**
+ * Parse a numeric search query into a Pokemon ID
+ * Supports zero-padded values and optional leading "#".
+ * @param {string} query - Search query
+ * @returns {number|null} Parsed Pokemon ID or null when not numeric
+ */
+function getNumericSearchId(query) {
+    const normalizedQuery = normalizeSearchQuery(query).replace(/^#/, '');
+
+    if (!/^\d+$/.test(normalizedQuery)) {
+        return null;
+    }
+
+    return parseInt(normalizedQuery, 10);
+}
+
+/**
+ * Check whether a Pokemon matches a search query
+ * Numeric queries are treated as exact ID matches, including zero-padded input.
+ * Text queries perform a case-insensitive name match.
+ * @param {Object} pokemon - Pokemon data or basic Pokemon list item
+ * @param {string} query - Search query
+ * @returns {boolean} True when the Pokemon matches the query
+ */
+function matchesPokemonSearch(pokemon, query) {
+    const normalizedQuery = normalizeSearchQuery(query);
+
+    if (!normalizedQuery) {
+        return true;
+    }
+
+    if (isNumericSearchQuery(normalizedQuery)) {
+        const pokemonId = extractPokemonId(pokemon.id ?? pokemon.url);
+        const searchId = getNumericSearchId(normalizedQuery);
+
+        if (pokemonId === null || searchId === null) {
+            return false;
+        }
+
+        return pokemonId === searchId;
+    }
+
+    return String(pokemon.name || '').toLowerCase().includes(normalizedQuery);
+}
+
+/**
  * Simple local storage cache for API responses
  */
 const cache = {
@@ -374,5 +437,9 @@ window.PokedexUtils = {
     showElement,
     hideElement,
     extractPokemonId,
+    normalizeSearchQuery,
+    isNumericSearchQuery,
+    getNumericSearchId,
+    matchesPokemonSearch,
     cache
 };
