@@ -174,9 +174,6 @@ function createPokemonDetailHTML(pokemon) {
                                 onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png'"
                             >
                         </div>
-                        <div class="pokemon-card-tcg__image-caption">
-                            ${category}. Height: ${formatHeight(height)}, Weight: ${formatWeight(weight)}
-                        </div>
                     </div>
 
                     <!-- Abilities -->
@@ -243,6 +240,25 @@ function createPokemonDetailHTML(pokemon) {
                         </div>
                     </div>
 
+                    <!-- Profile Section -->
+                    <div class="pokemon-info-card__profile-section">
+                        <span class="pokemon-info-card__section-label">Profile</span>
+                        <div class="pokemon-info-card__profile-grid">
+                            <div class="pokemon-info-card__profile-item">
+                                <span class="pokemon-info-card__profile-label">Category</span>
+                                <span class="pokemon-info-card__profile-value">${category}</span>
+                            </div>
+                            <div class="pokemon-info-card__profile-item">
+                                <span class="pokemon-info-card__profile-label">Height</span>
+                                <span class="pokemon-info-card__profile-value">${formatHeight(height)}</span>
+                            </div>
+                            <div class="pokemon-info-card__profile-item">
+                                <span class="pokemon-info-card__profile-label">Weight</span>
+                                <span class="pokemon-info-card__profile-value">${formatWeight(weight)}</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Base Stats (2-column) -->
                     <div class="pokemon-info-card__stats-section">
                         <div class="pokemon-info-card__section-header">
@@ -251,6 +267,14 @@ function createPokemonDetailHTML(pokemon) {
                         </div>
                         <div class="pokemon-info-card__stats">
                             ${statsHTML}
+                        </div>
+                    </div>
+
+                    <!-- Abilities -->
+                    <div class="pokemon-info-card__abilities-section">
+                        <span class="pokemon-info-card__section-label">Abilities</span>
+                        <div class="pokemon-info-card__abilities">
+                            ${abilitiesHTML}
                         </div>
                     </div>
 
