@@ -92,7 +92,7 @@
     outline: none;
 }
 
-.pokemon-card-wrapper:focus-visible .pokemon-card__front {
+.pokemon-card-wrapper.interactive:focus-visible .pokemon-card__front {
     border-color: rgba(243, 200, 107, 0.78);
     box-shadow:
         0 0 0 3px rgba(243, 200, 107, 0.16),
@@ -238,6 +238,14 @@
 .pokemon-card-wrapper {
     perspective: 1000px;
     min-height: 360px;
+    pointer-events: none;
+    cursor: default;
+}
+
+/* Enable interactions only after animation completes */
+.pokemon-card-wrapper.interactive {
+    pointer-events: auto;
+    cursor: pointer;
 }
 
 .pokemon-card {
@@ -248,7 +256,7 @@
     min-height: 360px;
     border-radius: 1.85rem;
     overflow: visible;
-    cursor: pointer;
+    cursor: inherit;
     transform-style: preserve-3d;
     transition: transform 0.7s cubic-bezier(0.4, 0.0, 0.2, 1);
     transition-delay: var(--flip-delay, 0ms);
@@ -369,14 +377,14 @@
     pointer-events: none;
 }
 
-.pokemon-card-wrapper:hover .pokemon-card__front {
+.pokemon-card-wrapper.interactive:hover .pokemon-card__front {
     box-shadow: 
         0 20px 50px rgba(0, 0, 0, 0.35),
         0 8px 20px rgba(0, 0, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
-.pokemon-card-wrapper.flipped:hover .pokemon-card {
+.pokemon-card-wrapper.interactive:hover .pokemon-card {
     transform: translateY(-10px) scale(1.02);
 }
 

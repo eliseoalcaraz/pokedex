@@ -35,7 +35,7 @@ function createPokemonCard(pokemon, onClick, index = 0) {
     const cardWrapper = createElement('div', {
         className: 'pokemon-card-wrapper',
         style: `--flip-delay: ${index * 80}ms`,
-        tabindex: '0',
+        tabindex: '-1',
         role: 'button',
         'aria-label': `View details for ${capitalize(name)}`
     });
@@ -125,6 +125,18 @@ function renderPokemonCards(container, pokemonList, onCardClick, append = false)
         requestAnimationFrame(() => {
             const cards = container.querySelectorAll('.pokemon-card-wrapper:not(.flipped):not(.pokemon-card-wrapper--loading)');
             cards.forEach(card => {
+                const pokemonCard = card.querySelector('.pokemon-card');
+                
+                // Listen for animation end to enable interaction
+                const handleTransitionEnd = (e) => {
+                    if (e.propertyName === 'transform') {
+                        card.classList.add('interactive');
+                        card.setAttribute('tabindex', '0');
+                        pokemonCard.removeEventListener('transitionend', handleTransitionEnd);
+                    }
+                };
+                
+                pokemonCard.addEventListener('transitionend', handleTransitionEnd);
                 card.classList.add('flipped');
             });
         });
