@@ -1,4 +1,20 @@
-import { formatPokemonId, getPokemonImageUrl, capitalize, formatHeight, formatWeight, getWeaknesses, formatStatName, getStatClass, calculateStatPercentage } from '../utils/formatters.js';
+import { CONFIG } from '../config/constants.js';
+import {
+    calculateStatPercentage,
+    capitalize,
+    formatDisplayName,
+    formatFlavorText,
+    formatGenerationName,
+    formatHeight,
+    formatPokemonId,
+    formatStatName,
+    formatWeight,
+    getEnglishGenus,
+    getPokemonImageUrl,
+    getPokemonProgress,
+    getStatClass,
+    getWeaknesses
+} from '../utils/formatters.js';
 
 function getTypeHeaderColor(type) {
     const colors = {
@@ -26,11 +42,47 @@ function getTypeHeaderColor(type) {
 }
 
 function createPokemonDetailHTML(pokemon) {
-    const { id, name, types, height, weight, stats, abilities } = pokemon;
+    const { id, name, types, height, weight, stats, abilities, moves = [], species = {} } = pokemon;
     const primaryType = types[0]?.type?.name || 'normal';
     const typeNames = types.map(type => type.type?.name || type).filter(Boolean);
     const weaknesses = getWeaknesses(typeNames);
     const totalStats = stats.reduce((sum, stat) => sum + stat.base_stat, 0);
+    const category = getEnglishGenus(species.genera);
+    const fieldSummary = formatFlavorText(species.flavor_text_entries);
+    const generation = formatGenerationName(species.generation);
+    const shape = formatDisplayName(species.shape?.name);
+    const habitat = species.habitat ? formatDisplayName(species.habitat.name) : 'Unknown';
+    const progress = getPokemonProgress(id, CONFIG.MAX_POKEMON_ID);
+    const moveEntries = moves
+        .map(move => {
+            const moveName = move.move?.name;
+
+            if (!moveName) {
+                return null;
+            }
+
+            const levelUpLevels = move.version_group_details
+                ?.filter(detail => detail.move_learn_method?.name === 'level-up')
+                .map(detail => detail.level_learned_at)
+                .filter(level => typeof level === 'number');
+
+            return {
+                level: levelUpLevels?.length ? Math.min(...levelUpLevels) : null,
+                name: moveName
+            };
+        })
+        .filter(Boolean);
+    const uniqueMoves = [...new Set(moveEntries.map(move => move.name))];
+    const preferredMoves = [...new Set(
+        moveEntries
+            .filter(move => move.level !== null)
+            .sort((left, right) => left.level - right.level || left.name.localeCompare(right.name))
+            .map(move => move.name)
+    )];
+    const showcaseMoves = (preferredMoves.length > 0 ? preferredMoves : uniqueMoves)
+        .slice(0, 4)
+        .map(moveName => formatDisplayName(moveName));
+    const remainingMoveCount = Math.max(uniqueMoves.length - showcaseMoves.length, 0);
 
     const typesHTML = typeNames.map(type => (
         `<span class="type-badge type-badge--${type.toLowerCase()}">${capitalize(type)}</span>`
@@ -41,19 +93,23 @@ function createPokemonDetailHTML(pokemon) {
     )).join('');
 
     const abilitiesHTML = abilities.map(ability => {
-        const nameLabel = capitalize(ability.ability.name.replace('-', ' '));
+        const nameLabel = formatDisplayName(ability.ability.name);
         return `<span class="ability-badge ${ability.is_hidden ? 'ability-badge--hidden' : ''}" title="${ability.is_hidden ? 'Hidden Ability' : ''}">${nameLabel}${ability.is_hidden ? ' (Hidden)' : ''}</span>`;
     }).join('');
+
+    const movesHTML = showcaseMoves.map(move => (
+        `<span class="pokemon-detail__move-chip">${move}</span>`
+    )).join('');
 
     const statsHTML = stats.map(stat => {
         const percentage = calculateStatPercentage(stat.base_stat);
         return `
             <div class="pokemon-detail__stat">
                 <span class="pokemon-detail__stat-name">${formatStatName(stat.stat.name)}</span>
+                <span class="pokemon-detail__stat-value">${stat.base_stat}</span>
                 <div class="pokemon-detail__stat-bar">
                     <div class="pokemon-detail__stat-fill ${getStatClass(stat.stat.name)}" style="width: ${percentage}%"></div>
                 </div>
-                <span class="pokemon-detail__stat-value">${stat.base_stat}</span>
             </div>
         `;
     }).join('');
@@ -64,11 +120,9 @@ function createPokemonDetailHTML(pokemon) {
                 <aside class="pokemon-detail__sidebar" style="background: ${getTypeHeaderColor(primaryType)}; color: white;">
                     <div class="pokemon-detail__hero">
                         <div class="pokemon-detail__identity">
-                            <span class="pokemon-detail__id">#${formatPokemonId(id)}</span>
+                            <span class="pokemon-detail__eyebrow">Pokedex Entry</span>
                             <h2 class="pokemon-detail__name" id="modalTitle">${capitalize(name)}</h2>
-                            <div class="pokemon-detail__types">
-                                ${typesHTML}
-                            </div>
+                            <span class="pokemon-detail__id">#${formatPokemonId(id)}</span>
                         </div>
                         <div class="pokemon-detail__image-container">
                             <div class="pokemon-detail__image-bg"></div>
@@ -79,47 +133,111 @@ function createPokemonDetailHTML(pokemon) {
                                 onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png'"
                             >
                         </div>
+                        <div class="pokemon-detail__types">
+                            ${typesHTML}
+                        </div>
                     </div>
-                </aside>
-                
-                <div class="pokemon-detail__main">
-                    <section class="pokemon-detail__section pokemon-detail__section--stats">
-                        <h3 class="pokemon-detail__section-title">Base Stats</h3>
-                        <div class="pokemon-detail__stats">
-                            ${statsHTML}
+
+                    <section class="pokemon-detail__section pokemon-detail__section--sidebar">
+                        <h3 class="pokemon-detail__section-title">Quick Facts</h3>
+                        <div class="pokemon-detail__info-grid pokemon-detail__info-grid--sidebar">
+                            <div class="pokemon-detail__info-item">
+                                <span class="pokemon-detail__info-label">Height</span>
+                                <span class="pokemon-detail__info-value">${formatHeight(height)}</span>
+                            </div>
+                            <div class="pokemon-detail__info-item">
+                                <span class="pokemon-detail__info-label">Weight</span>
+                                <span class="pokemon-detail__info-value">${formatWeight(weight)}</span>
+                            </div>
+                            <div class="pokemon-detail__info-item">
+                                <span class="pokemon-detail__info-label">Stat Total</span>
+                                <span class="pokemon-detail__info-value">${totalStats}</span>
+                            </div>
                         </div>
                     </section>
 
-                    <div class="pokemon-detail__content-grid">
+                    <section class="pokemon-detail__section pokemon-detail__section--sidebar">
+                        <h3 class="pokemon-detail__section-title">Pokedex Details</h3>
+                        <div class="pokemon-detail__detail-list">
+                            <div class="pokemon-detail__detail-card">
+                                <span class="pokemon-detail__info-label">Base Exp</span>
+                                <span class="pokemon-detail__info-value">${pokemon.base_experience ?? 'N/A'}</span>
+                            </div>
+                            <div class="pokemon-detail__detail-card">
+                                <span class="pokemon-detail__info-label">Generation</span>
+                                <span class="pokemon-detail__info-value">${generation}</span>
+                            </div>
+                            <div class="pokemon-detail__detail-card">
+                                <span class="pokemon-detail__info-label">Shape</span>
+                                <span class="pokemon-detail__info-value">${shape}</span>
+                            </div>
+                            <div class="pokemon-detail__detail-card">
+                                <span class="pokemon-detail__info-label">Habitat</span>
+                                <span class="pokemon-detail__info-value">${habitat}</span>
+                            </div>
+                        </div>
+                    </section>
+                </aside>
+
+                <div class="pokemon-detail__main">
+                    <div class="pokemon-detail__content-grid pokemon-detail__content-grid--intro">
                         <section class="pokemon-detail__section">
-                            <h3 class="pokemon-detail__section-title">About</h3>
-                            <div class="pokemon-detail__info-grid">
-                                <div class="pokemon-detail__info-item">
-                                    <span class="pokemon-detail__info-label">Height</span>
-                                    <span class="pokemon-detail__info-value">${formatHeight(height)}</span>
+                            <h3 class="pokemon-detail__section-title">Pokedex ID</h3>
+                            <div class="pokemon-detail__callout pokemon-detail__callout--id">
+                                <span class="pokemon-detail__callout-value">#${formatPokemonId(id)}</span>
+                            </div>
+                        </section>
+
+                        <section class="pokemon-detail__section pokemon-detail__section--wide">
+                            <h3 class="pokemon-detail__section-title">Profile</h3>
+                            <div class="pokemon-detail__summary-stack">
+                                <div class="pokemon-detail__summary-row">
+                                    <span class="pokemon-detail__info-label">Category</span>
+                                    <span class="pokemon-detail__summary-value">${category}</span>
                                 </div>
-                                <div class="pokemon-detail__info-item">
-                                    <span class="pokemon-detail__info-label">Weight</span>
-                                    <span class="pokemon-detail__info-value">${formatWeight(weight)}</span>
-                                </div>
-                                <div class="pokemon-detail__info-item">
-                                    <span class="pokemon-detail__info-label">Base Exp</span>
-                                    <span class="pokemon-detail__info-value">${pokemon.base_experience || 'N/A'}</span>
-                                </div>
-                                <div class="pokemon-detail__info-item">
-                                    <span class="pokemon-detail__info-label">Total Stats</span>
-                                    <span class="pokemon-detail__info-value">${totalStats}</span>
+                                <div class="pokemon-detail__summary-row">
+                                    <span class="pokemon-detail__info-label">Field Summary</span>
+                                    <p class="pokemon-detail__summary-text">${fieldSummary}</p>
                                 </div>
                             </div>
                         </section>
-                        
+
+                        <section class="pokemon-detail__section">
+                            <h3 class="pokemon-detail__section-title">Pokedex Progress</h3>
+                            <div class="pokemon-detail__progress-card">
+                                <span class="pokemon-detail__progress-value">${progress}%</span>
+                                <span class="pokemon-detail__progress-meta">Entry ${id} of ${CONFIG.MAX_POKEMON_ID}</span>
+                            </div>
+                        </section>
+
                         <section class="pokemon-detail__section">
                             <h3 class="pokemon-detail__section-title">Abilities</h3>
                             <div class="pokemon-detail__abilities">
                                 ${abilitiesHTML}
                             </div>
                         </section>
-                        
+
+                        <section class="pokemon-detail__section pokemon-detail__section--wide pokemon-detail__section--stats">
+                            <div class="pokemon-detail__section-header">
+                                <h3 class="pokemon-detail__section-title">Base Stats</h3>
+                                <span class="pokemon-detail__section-meta">Scaled to 255</span>
+                            </div>
+                            <div class="pokemon-detail__stats">
+                                ${statsHTML}
+                            </div>
+                        </section>
+
+                        <section class="pokemon-detail__section pokemon-detail__section--wide">
+                            <div class="pokemon-detail__section-header">
+                                <h3 class="pokemon-detail__section-title">Moves to Remember</h3>
+                                ${remainingMoveCount > 0 ? `<span class="pokemon-detail__section-meta">${remainingMoveCount} more available</span>` : ''}
+                            </div>
+                            <div class="pokemon-detail__moves">
+                                ${movesHTML || '<span class="pokemon-detail__move-chip">No moves available</span>'}
+                            </div>
+                            ${remainingMoveCount > 0 ? `<div class="pokemon-detail__moves-more">+${remainingMoveCount} more moves in the Pokedex</div>` : ''}
+                        </section>
+
                         <section class="pokemon-detail__section pokemon-detail__section--wide">
                             <h3 class="pokemon-detail__section-title">Weaknesses</h3>
                             <div class="pokemon-detail__weaknesses">

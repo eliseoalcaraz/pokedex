@@ -79,14 +79,60 @@ function calculateStatPercentage(value, maxValue = 255) {
     return Math.min((value / maxValue) * 100, 100);
 }
 
+function formatDisplayName(value) {
+    if (!value) {
+        return 'Unknown';
+    }
+
+    return value
+        .split(/[-\s]+/)
+        .map(part => capitalize(part))
+        .join(' ');
+}
+
+function formatFlavorText(entries = []) {
+    const englishEntry = entries.find(entry => entry.language?.name === 'en');
+
+    if (!englishEntry?.flavor_text) {
+        return 'No field summary available.';
+    }
+
+    return englishEntry.flavor_text.replace(/[\f\n\r]+/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function getEnglishGenus(genera = []) {
+    const englishGenus = genera.find(entry => entry.language?.name === 'en')?.genus;
+    return englishGenus || 'Unknown Pokemon';
+}
+
+function formatGenerationName(generation) {
+    const rawName = typeof generation === 'string' ? generation : generation?.name;
+
+    if (!rawName) {
+        return 'Unknown';
+    }
+
+    const match = rawName.match(/generation-(.+)/i);
+    return match ? `Gen ${match[1].toUpperCase()}` : formatDisplayName(rawName);
+}
+
+function getPokemonProgress(id, total = CONFIG.MAX_POKEMON_ID) {
+    return Math.max(1, Math.round((id / total) * 100));
+}
+
 export {
     calculateStatPercentage,
     capitalize,
+    formatDisplayName,
+    formatFlavorText,
+    formatGenerationName,
     formatHeight,
     formatPokemonId,
     formatStatName,
     formatWeight,
+    getEnglishGenus,
     getPokemonImageUrl,
+    getPokemonProgress,
     getStatClass,
     getWeaknesses
 };

@@ -39,12 +39,20 @@
         align-items: center;
     }
 
+    .pokemon-detail__types {
+        justify-content: center;
+    }
+
     .pokemon-detail__content-grid {
         grid-template-columns: 1fr;
     }
 
     .pokemon-detail__section--wide {
         grid-column: auto;
+    }
+
+    .pokemon-detail__detail-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
 
@@ -161,13 +169,13 @@
     }
 
     .pokemon-detail__image-bg {
-        width: 184px;
-        height: 184px;
+        width: 190px;
+        height: 190px;
     }
 
     .pokemon-detail__image {
-        width: 210px;
-        height: 210px;
+        width: 220px;
+        height: 220px;
     }
 
     .pokemon-detail__main {
@@ -183,9 +191,20 @@
         gap: 0.7rem;
     }
 
+    .pokemon-detail__detail-list,
+    .pokemon-detail__moves {
+        grid-template-columns: 1fr;
+    }
+
     .pokemon-detail__stat {
-        grid-template-columns: 92px minmax(0, 1fr) 36px;
+        grid-template-columns: 92px 36px minmax(0, 1fr);
         gap: 0.6rem;
+    }
+
+    .pokemon-detail__section-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 0.35rem;
     }
 
     .modal__nav {
@@ -294,13 +313,13 @@
     }
 
     .pokemon-detail__image-bg {
-        width: 154px;
-        height: 154px;
+        width: 158px;
+        height: 158px;
     }
 
     .pokemon-detail__image {
-        width: 176px;
-        height: 176px;
+        width: 186px;
+        height: 186px;
     }
 
     .pokemon-detail__types {
@@ -312,7 +331,9 @@
     }
 
     .pokemon-detail__content-grid,
-    .pokemon-detail__info-grid {
+    .pokemon-detail__info-grid,
+    .pokemon-detail__detail-list,
+    .pokemon-detail__moves {
         grid-template-columns: 1fr;
     }
 
@@ -323,6 +344,15 @@
 
     .pokemon-detail__stat-value {
         text-align: left;
+    }
+
+    .pokemon-detail__callout {
+        min-height: 76px;
+    }
+
+    .pokemon-detail__callout-value,
+    .pokemon-detail__progress-value {
+        font-size: 1.7rem;
     }
 
     .modal__nav {

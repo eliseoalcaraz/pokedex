@@ -4,6 +4,7 @@ import { extractPokemonId } from '../utils/helpers.js';
 
 function createPokemonApi({ cache = createExpiringCache() } = {}) {
     const detailedPokemon = new Map();
+    const pokemonSpecies = new Map();
     let pokemonIndexPromise = null;
 
     async function fetchWithCache(url) {
@@ -55,11 +56,23 @@ function createPokemonApi({ cache = createExpiringCache() } = {}) {
         }
 
         const data = await fetchWithCache(url);
-        if (data.id) {
-            detailedPokemon.set(data.id, data);
+        const speciesUrl = data.species?.url || `${CONFIG.API_BASE_URL}/pokemon-species/${data.id}`;
+        const species = await fetchWithCache(speciesUrl);
+
+        if (species.id) {
+            pokemonSpecies.set(species.id, species);
         }
 
-        return data;
+        const enrichedPokemon = {
+            ...data,
+            species
+        };
+
+        if (enrichedPokemon.id) {
+            detailedPokemon.set(enrichedPokemon.id, enrichedPokemon);
+        }
+
+        return enrichedPokemon;
     }
 
     async function fetchMultiplePokemonDetails(pokemonList) {
@@ -103,6 +116,7 @@ function createPokemonApi({ cache = createExpiringCache() } = {}) {
         fetchPokemonList,
         fetchMultiplePokemonDetails,
         getCachedPokemon: id => detailedPokemon.get(id),
+        getCachedSpecies: id => pokemonSpecies.get(id),
         hasCachedPokemon: id => detailedPokemon.has(id)
     };
 }
