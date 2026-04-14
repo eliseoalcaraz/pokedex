@@ -148,19 +148,29 @@ function createPokedexApp() {
         }
 
         try {
-            const modalBody = document.getElementById('modalBody');
-            if (modalBody) {
-                modalBody.innerHTML = `
-                    <div class="loader" style="padding: 80px 0;">
-                        <div class="loader__spinner"></div>
-                        <p class="loader__text">Loading...</p>
-                    </div>
-                `;
-            }
+            // Check if Pokemon is already cached
+            const cachedPokemon = api.getCachedPokemon(pokemonId);
+            
+            if (cachedPokemon) {
+                // Immediately update if cached - no loading needed
+                state.currentPokemonId = pokemonId;
+                modal.update(cachedPokemon, getNavigationInfo(pokemonId));
+            } else {
+                // Show loading only if we need to fetch
+                const modalBody = document.getElementById('modalBody');
+                if (modalBody) {
+                    modalBody.innerHTML = `
+                        <div class="loader" style="padding: 80px 0;">
+                            <div class="loader__spinner"></div>
+                            <p class="loader__text">Loading...</p>
+                        </div>
+                    `;
+                }
 
-            const pokemon = api.getCachedPokemon(pokemonId) || await api.fetchPokemonDetails(pokemonId);
-            state.currentPokemonId = pokemonId;
-            modal.update(pokemon, getNavigationInfo(pokemonId));
+                const pokemon = await api.fetchPokemonDetails(pokemonId);
+                state.currentPokemonId = pokemonId;
+                modal.update(pokemon, getNavigationInfo(pokemonId));
+            }
         } catch (error) {
             console.error('Error navigating to Pokemon:', error);
         }
