@@ -22,11 +22,18 @@
         grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     }
 
+    .modal__content {
+        width: min(100%, 980px);
+        max-height: 92vh;
+        overflow-y: auto;
+    }
+
     .pokemon-detail__layout {
         grid-template-columns: 1fr;
     }
 
     .pokemon-detail__sidebar {
+        display: grid;
         border-radius: 2rem 2rem 0 0;
     }
 
@@ -43,7 +50,7 @@
         justify-content: center;
     }
 
-    .pokemon-detail__content-grid {
+    .pokemon-detail__dashboard {
         grid-template-columns: 1fr;
     }
 
@@ -51,7 +58,8 @@
         grid-column: auto;
     }
 
-    .pokemon-detail__detail-list {
+    .pokemon-detail__detail-list,
+    .pokemon-detail__detail-list--wide {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
@@ -165,17 +173,17 @@
 
     .pokemon-detail__image-container {
         min-width: 0;
-        min-height: 210px;
+        min-height: 220px;
     }
 
     .pokemon-detail__image-bg {
-        width: 190px;
-        height: 190px;
+        width: 196px;
+        height: 196px;
     }
 
     .pokemon-detail__image {
-        width: 220px;
-        height: 220px;
+        width: 226px;
+        height: 226px;
     }
 
     .pokemon-detail__main {
@@ -186,12 +194,8 @@
         padding: 1rem;
     }
 
-    .pokemon-detail__info-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 0.7rem;
-    }
-
     .pokemon-detail__detail-list,
+    .pokemon-detail__detail-list--wide,
     .pokemon-detail__moves {
         grid-template-columns: 1fr;
     }
@@ -199,6 +203,10 @@
     .pokemon-detail__stat {
         grid-template-columns: 92px 36px minmax(0, 1fr);
         gap: 0.6rem;
+    }
+
+    .pokemon-detail__summary-text {
+        line-height: 1.6;
     }
 
     .pokemon-detail__section-header {
@@ -330,9 +338,8 @@
         padding: 0.9rem;
     }
 
-    .pokemon-detail__content-grid,
-    .pokemon-detail__info-grid,
     .pokemon-detail__detail-list,
+    .pokemon-detail__detail-list--wide,
     .pokemon-detail__moves {
         grid-template-columns: 1fr;
     }
@@ -346,11 +353,6 @@
         text-align: left;
     }
 
-    .pokemon-detail__callout {
-        min-height: 76px;
-    }
-
-    .pokemon-detail__callout-value,
     .pokemon-detail__progress-value {
         font-size: 1.7rem;
     }

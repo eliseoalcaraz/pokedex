@@ -53,6 +53,7 @@ function createPokemonDetailHTML(pokemon) {
     const shape = formatDisplayName(species.shape?.name);
     const habitat = species.habitat ? formatDisplayName(species.habitat.name) : 'Unknown';
     const progress = getPokemonProgress(id, CONFIG.MAX_POKEMON_ID);
+    const hpStat = stats.find(s => s.stat.name === 'hp')?.base_stat || 0;
     const moveEntries = moves
         .map(move => {
             const moveName = move.move?.name;
@@ -79,172 +80,223 @@ function createPokemonDetailHTML(pokemon) {
             .sort((left, right) => left.level - right.level || left.name.localeCompare(right.name))
             .map(move => move.name)
     )];
+    
+    // Card 1: Show 2 moves
     const showcaseMoves = (preferredMoves.length > 0 ? preferredMoves : uniqueMoves)
-        .slice(0, 4)
+        .slice(0, 2)
         .map(moveName => formatDisplayName(moveName));
-    const remainingMoveCount = Math.max(uniqueMoves.length - showcaseMoves.length, 0);
+    
+    // Card 2: Show more moves (next 4)
+    const additionalMoves = (preferredMoves.length > 0 ? preferredMoves : uniqueMoves)
+        .slice(2, 6)
+        .map(moveName => formatDisplayName(moveName));
+    const remainingMoveCount = Math.max(uniqueMoves.length - 6, 0);
 
-    const typesHTML = typeNames.map(type => (
-        `<span class="type-badge type-badge--${type.toLowerCase()}">${capitalize(type)}</span>`
+    // Card 1 weaknesses (2 max as energy icons)
+    const weaknessesHTML = weaknesses.slice(0, 2).map(type => (
+        `<span class="pokemon-card-tcg__energy pokemon-card-tcg__energy--${type}" title="${capitalize(type)}"></span>`
     )).join('');
 
-    const weaknessesHTML = weaknesses.map(type => (
+    // Card 2 full weaknesses list
+    const fullWeaknessesHTML = weaknesses.map(type => (
         `<span class="type-badge type-badge--${type}">${capitalize(type)}</span>`
     )).join('');
 
     const abilitiesHTML = abilities.map(ability => {
         const nameLabel = formatDisplayName(ability.ability.name);
-        return `<span class="ability-badge ${ability.is_hidden ? 'ability-badge--hidden' : ''}" title="${ability.is_hidden ? 'Hidden Ability' : ''}">${nameLabel}${ability.is_hidden ? ' (Hidden)' : ''}</span>`;
+        return `<span class="pokemon-card-tcg__ability ${ability.is_hidden ? 'pokemon-card-tcg__ability--hidden' : ''}">${nameLabel}${ability.is_hidden ? ' ✦' : ''}</span>`;
     }).join('');
 
-    const movesHTML = showcaseMoves.map(move => (
-        `<span class="pokemon-detail__move-chip">${move}</span>`
-    )).join('');
+    const movesHTML = showcaseMoves.map((move, index) => {
+        const damage = (index + 1) * 20 + Math.floor(hpStat / 10);
+        return `
+            <div class="pokemon-card-tcg__attack">
+                <div class="pokemon-card-tcg__attack-cost">
+                    <span class="pokemon-card-tcg__energy pokemon-card-tcg__energy--${primaryType}"></span>
+                </div>
+                <div class="pokemon-card-tcg__attack-info">
+                    <span class="pokemon-card-tcg__attack-name">${move}</span>
+                </div>
+                <span class="pokemon-card-tcg__attack-damage">${damage}</span>
+            </div>
+        `;
+    }).join('');
 
+    // Full stats for Card 2
     const statsHTML = stats.map(stat => {
         const percentage = calculateStatPercentage(stat.base_stat);
         return `
-            <div class="pokemon-detail__stat">
-                <span class="pokemon-detail__stat-name">${formatStatName(stat.stat.name)}</span>
-                <span class="pokemon-detail__stat-value">${stat.base_stat}</span>
-                <div class="pokemon-detail__stat-bar">
-                    <div class="pokemon-detail__stat-fill ${getStatClass(stat.stat.name)}" style="width: ${percentage}%"></div>
+            <div class="pokemon-info-card__stat">
+                <span class="pokemon-info-card__stat-name">${formatStatName(stat.stat.name)}</span>
+                <span class="pokemon-info-card__stat-value">${stat.base_stat}</span>
+                <div class="pokemon-info-card__stat-bar">
+                    <div class="pokemon-info-card__stat-fill ${getStatClass(stat.stat.name)}" style="width: ${percentage}%"></div>
                 </div>
             </div>
         `;
     }).join('');
 
+    const typeIconsHTML = typeNames.map(type => (
+        `<span class="pokemon-card-tcg__energy pokemon-card-tcg__energy--${type.toLowerCase()}" title="${capitalize(type)}"></span>`
+    )).join('');
+
+    const typeBadgesHTML = typeNames.map(type => (
+        `<span class="type-badge type-badge--${type.toLowerCase()}">${capitalize(type)}</span>`
+    )).join('');
+
+    const additionalMovesHTML = additionalMoves.map(move => (
+        `<span class="pokemon-info-card__move-chip">${move}</span>`
+    )).join('');
+
     return `
-        <div class="pokemon-detail">
-            <div class="pokemon-detail__layout">
-                <aside class="pokemon-detail__sidebar" style="background: ${getTypeHeaderColor(primaryType)}; color: white;">
-                    <div class="pokemon-detail__hero">
-                        <div class="pokemon-detail__identity">
-                            <span class="pokemon-detail__eyebrow">Pokedex Entry</span>
-                            <h2 class="pokemon-detail__name" id="modalTitle">${capitalize(name)}</h2>
-                            <span class="pokemon-detail__id">#${formatPokemonId(id)}</span>
+        <div class="pokemon-cards-wrapper">
+            <!-- Card 1: TCG Battle Card -->
+            <div class="pokemon-card-tcg pokemon-card-tcg--${primaryType}">
+                <div class="pokemon-card-tcg__inner">
+                    <!-- Card Header -->
+                    <div class="pokemon-card-tcg__header">
+                        <div class="pokemon-card-tcg__stage">Basic Pokémon</div>
+                        <h2 class="pokemon-card-tcg__name" id="modalTitle">${capitalize(name)}</h2>
+                        <div class="pokemon-card-tcg__hp">
+                            <span class="pokemon-card-tcg__hp-value">${hpStat}</span>
+                            <span class="pokemon-card-tcg__hp-label">HP</span>
+                            ${typeIconsHTML}
                         </div>
-                        <div class="pokemon-detail__image-container">
-                            <div class="pokemon-detail__image-bg"></div>
+                    </div>
+
+                    <!-- Card Image Frame -->
+                    <div class="pokemon-card-tcg__image-frame">
+                        <div class="pokemon-card-tcg__image-container">
                             <img 
-                                class="pokemon-detail__image" 
+                                class="pokemon-card-tcg__image" 
                                 src="${getPokemonImageUrl(id)}" 
                                 alt="${capitalize(name)}"
                                 onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png'"
                             >
                         </div>
-                        <div class="pokemon-detail__types">
-                            ${typesHTML}
+                        <div class="pokemon-card-tcg__image-caption">
+                            ${category}. Height: ${formatHeight(height)}, Weight: ${formatWeight(weight)}
                         </div>
                     </div>
 
-                    <section class="pokemon-detail__section pokemon-detail__section--sidebar">
-                        <h3 class="pokemon-detail__section-title">Quick Facts</h3>
-                        <div class="pokemon-detail__info-grid pokemon-detail__info-grid--sidebar">
-                            <div class="pokemon-detail__info-item">
-                                <span class="pokemon-detail__info-label">Height</span>
-                                <span class="pokemon-detail__info-value">${formatHeight(height)}</span>
-                            </div>
-                            <div class="pokemon-detail__info-item">
-                                <span class="pokemon-detail__info-label">Weight</span>
-                                <span class="pokemon-detail__info-value">${formatWeight(weight)}</span>
-                            </div>
-                            <div class="pokemon-detail__info-item">
-                                <span class="pokemon-detail__info-label">Stat Total</span>
-                                <span class="pokemon-detail__info-value">${totalStats}</span>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section class="pokemon-detail__section pokemon-detail__section--sidebar">
-                        <h3 class="pokemon-detail__section-title">Pokedex Details</h3>
-                        <div class="pokemon-detail__detail-list">
-                            <div class="pokemon-detail__detail-card">
-                                <span class="pokemon-detail__info-label">Base Exp</span>
-                                <span class="pokemon-detail__info-value">${pokemon.base_experience ?? 'N/A'}</span>
-                            </div>
-                            <div class="pokemon-detail__detail-card">
-                                <span class="pokemon-detail__info-label">Generation</span>
-                                <span class="pokemon-detail__info-value">${generation}</span>
-                            </div>
-                            <div class="pokemon-detail__detail-card">
-                                <span class="pokemon-detail__info-label">Shape</span>
-                                <span class="pokemon-detail__info-value">${shape}</span>
-                            </div>
-                            <div class="pokemon-detail__detail-card">
-                                <span class="pokemon-detail__info-label">Habitat</span>
-                                <span class="pokemon-detail__info-value">${habitat}</span>
-                            </div>
-                        </div>
-                    </section>
-                </aside>
-
-                <div class="pokemon-detail__main">
-                    <div class="pokemon-detail__content-grid pokemon-detail__content-grid--intro">
-                        <section class="pokemon-detail__section">
-                            <h3 class="pokemon-detail__section-title">Pokedex ID</h3>
-                            <div class="pokemon-detail__callout pokemon-detail__callout--id">
-                                <span class="pokemon-detail__callout-value">#${formatPokemonId(id)}</span>
-                            </div>
-                        </section>
-
-                        <section class="pokemon-detail__section pokemon-detail__section--wide">
-                            <h3 class="pokemon-detail__section-title">Profile</h3>
-                            <div class="pokemon-detail__summary-stack">
-                                <div class="pokemon-detail__summary-row">
-                                    <span class="pokemon-detail__info-label">Category</span>
-                                    <span class="pokemon-detail__summary-value">${category}</span>
-                                </div>
-                                <div class="pokemon-detail__summary-row">
-                                    <span class="pokemon-detail__info-label">Field Summary</span>
-                                    <p class="pokemon-detail__summary-text">${fieldSummary}</p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section class="pokemon-detail__section">
-                            <h3 class="pokemon-detail__section-title">Pokedex Progress</h3>
-                            <div class="pokemon-detail__progress-card">
-                                <span class="pokemon-detail__progress-value">${progress}%</span>
-                                <span class="pokemon-detail__progress-meta">Entry ${id} of ${CONFIG.MAX_POKEMON_ID}</span>
-                            </div>
-                        </section>
-
-                        <section class="pokemon-detail__section">
-                            <h3 class="pokemon-detail__section-title">Abilities</h3>
-                            <div class="pokemon-detail__abilities">
-                                ${abilitiesHTML}
-                            </div>
-                        </section>
-
-                        <section class="pokemon-detail__section pokemon-detail__section--wide pokemon-detail__section--stats">
-                            <div class="pokemon-detail__section-header">
-                                <h3 class="pokemon-detail__section-title">Base Stats</h3>
-                                <span class="pokemon-detail__section-meta">Scaled to 255</span>
-                            </div>
-                            <div class="pokemon-detail__stats">
-                                ${statsHTML}
-                            </div>
-                        </section>
-
-                        <section class="pokemon-detail__section pokemon-detail__section--wide">
-                            <div class="pokemon-detail__section-header">
-                                <h3 class="pokemon-detail__section-title">Moves to Remember</h3>
-                                ${remainingMoveCount > 0 ? `<span class="pokemon-detail__section-meta">${remainingMoveCount} more available</span>` : ''}
-                            </div>
-                            <div class="pokemon-detail__moves">
-                                ${movesHTML || '<span class="pokemon-detail__move-chip">No moves available</span>'}
-                            </div>
-                            ${remainingMoveCount > 0 ? `<div class="pokemon-detail__moves-more">+${remainingMoveCount} more moves in the Pokedex</div>` : ''}
-                        </section>
-
-                        <section class="pokemon-detail__section pokemon-detail__section--wide">
-                            <h3 class="pokemon-detail__section-title">Weaknesses</h3>
-                            <div class="pokemon-detail__weaknesses">
-                                ${weaknessesHTML || '<span class="ability-badge">None</span>'}
-                            </div>
-                        </section>
+                    <!-- Abilities -->
+                    ${abilities.length > 0 ? `
+                    <div class="pokemon-card-tcg__abilities-section">
+                        <span class="pokemon-card-tcg__abilities-label">Abilities:</span>
+                        ${abilitiesHTML}
                     </div>
+                    ` : ''}
+
+                    <!-- Attacks -->
+                    <div class="pokemon-card-tcg__attacks">
+                        ${movesHTML || '<div class="pokemon-card-tcg__no-moves">No moves learned</div>'}
+                    </div>
+
+                    <!-- Weakness / Resistance / Retreat -->
+                    <div class="pokemon-card-tcg__footer-stats">
+                        <div class="pokemon-card-tcg__footer-stat">
+                            <span class="pokemon-card-tcg__footer-label">weakness</span>
+                            <div class="pokemon-card-tcg__footer-value">
+                                ${weaknessesHTML || '<span class="pokemon-card-tcg__none">—</span>'}
+                                ${weaknesses.length > 0 ? '<span class="pokemon-card-tcg__modifier">×2</span>' : ''}
+                            </div>
+                        </div>
+                        <div class="pokemon-card-tcg__footer-stat">
+                            <span class="pokemon-card-tcg__footer-label">resistance</span>
+                            <div class="pokemon-card-tcg__footer-value">
+                                <span class="pokemon-card-tcg__none">—</span>
+                            </div>
+                        </div>
+                        <div class="pokemon-card-tcg__footer-stat">
+                            <span class="pokemon-card-tcg__footer-label">retreat cost</span>
+                            <div class="pokemon-card-tcg__footer-value">
+                                <span class="pokemon-card-tcg__energy pokemon-card-tcg__energy--colorless"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Flavor Text -->
+                    <div class="pokemon-card-tcg__flavor">
+                        ${fieldSummary}
+                    </div>
+
+                    <!-- Card Footer -->
+                    <div class="pokemon-card-tcg__card-footer">
+                        <span class="pokemon-card-tcg__card-number">${formatPokemonId(id)}/${CONFIG.MAX_POKEMON_ID}</span>
+                        <span class="pokemon-card-tcg__rarity">●</span>
+                        <span class="pokemon-card-tcg__set">${generation}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Detailed Info Card -->
+            <div class="pokemon-info-card pokemon-info-card--${primaryType}">
+                <div class="pokemon-info-card__inner">
+                    <!-- Header -->
+                    <div class="pokemon-info-card__header">
+                        <div class="pokemon-info-card__title-row">
+                            <span class="pokemon-info-card__id">#${formatPokemonId(id)}</span>
+                            <h3 class="pokemon-info-card__name">${capitalize(name)}</h3>
+                        </div>
+                        <div class="pokemon-info-card__types">
+                            ${typeBadgesHTML}
+                        </div>
+                    </div>
+
+                    <!-- Base Stats (2-column) -->
+                    <div class="pokemon-info-card__stats-section">
+                        <div class="pokemon-info-card__section-header">
+                            <span class="pokemon-info-card__section-label">Base Stats</span>
+                            <span class="pokemon-info-card__total-value">${totalStats}</span>
+                        </div>
+                        <div class="pokemon-info-card__stats">
+                            ${statsHTML}
+                        </div>
+                    </div>
+
+                    <!-- Pokédex Data + Weaknesses Row -->
+                    <div class="pokemon-info-card__row">
+                        <div class="pokemon-info-card__data-section">
+                            <span class="pokemon-info-card__section-label">Data</span>
+                            <div class="pokemon-info-card__data-grid">
+                                <div class="pokemon-info-card__data-item">
+                                    <span class="pokemon-info-card__data-label">Gen</span>
+                                    <span class="pokemon-info-card__data-value">${generation}</span>
+                                </div>
+                                <div class="pokemon-info-card__data-item">
+                                    <span class="pokemon-info-card__data-label">Habitat</span>
+                                    <span class="pokemon-info-card__data-value">${habitat}</span>
+                                </div>
+                                <div class="pokemon-info-card__data-item">
+                                    <span class="pokemon-info-card__data-label">Shape</span>
+                                    <span class="pokemon-info-card__data-value">${shape}</span>
+                                </div>
+                                <div class="pokemon-info-card__data-item">
+                                    <span class="pokemon-info-card__data-label">Exp</span>
+                                    <span class="pokemon-info-card__data-value">${pokemon.base_experience ?? 'N/A'}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pokemon-info-card__weaknesses-section">
+                            <span class="pokemon-info-card__section-label">Weaknesses</span>
+                            <div class="pokemon-info-card__weaknesses">
+                                ${fullWeaknessesHTML || '<span class="pokemon-info-card__none">None</span>'}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- More Moves -->
+                    ${additionalMoves.length > 0 ? `
+                    <div class="pokemon-info-card__moves-section">
+                        <div class="pokemon-info-card__moves-header">
+                            <span class="pokemon-info-card__section-label">More Moves</span>
+                            ${remainingMoveCount > 0 ? `<span class="pokemon-info-card__moves-count">+${remainingMoveCount}</span>` : ''}
+                        </div>
+                        <div class="pokemon-info-card__moves">
+                            ${additionalMovesHTML}
+                        </div>
+                    </div>
+                    ` : ''}
                 </div>
             </div>
         </div>
