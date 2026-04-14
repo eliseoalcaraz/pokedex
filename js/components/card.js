@@ -120,13 +120,15 @@ function renderPokemonCards(container, pokemonList, onCardClick, append = false)
 
     container.appendChild(fragment);
 
-    // Trigger flip animation after a small delay
-    requestAnimationFrame(() => {
-        const cards = container.querySelectorAll('.pokemon-card-wrapper:not(.flipped)');
-        cards.forEach(card => {
-            card.classList.add('flipped');
+    // Trigger flip animation after a delay to show card backs first
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            const cards = container.querySelectorAll('.pokemon-card-wrapper:not(.flipped):not(.pokemon-card-wrapper--loading)');
+            cards.forEach(card => {
+                card.classList.add('flipped');
+            });
         });
-    });
+    }, 300);
 }
 
 function createLoadingCard(index = 0) {
