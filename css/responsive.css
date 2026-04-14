@@ -9,7 +9,6 @@
     }
 
     .header__subtitle {
-        max-width: none;
         text-align: left;
     }
 
@@ -69,14 +68,9 @@
         --container-padding: 0.85rem;
     }
 
-    .header {
-        padding-top: 0.8rem;
-    }
-
     .header .container {
         padding-top: 0.95rem;
         padding-bottom: 0.95rem;
-        border-radius: 1.45rem;
     }
 
     .header__icon {
@@ -234,8 +228,7 @@
     }
 
     .header__subtitle {
-        font-size: 0.78rem;
-        padding: 0.75rem 0.9rem;
+        font-size: 0.85rem;
     }
 
     .filters {
