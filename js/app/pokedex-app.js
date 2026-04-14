@@ -1,5 +1,5 @@
 import { CONFIG } from '../config/constants.js';
-import { renderPokemonCards } from '../components/card.js';
+import { renderPokemonCards, showLoadingCards, removeLoadingCards } from '../components/card.js';
 import { createFilters } from '../components/filters.js';
 import { createPokemonModal } from '../components/modal.js';
 import { createPokemonApi } from '../services/pokemon-api.js';
@@ -172,7 +172,14 @@ function createPokedexApp() {
         }
 
         try {
-            showLoading();
+            state.isLoading = true;
+            if (elements.loadMoreBtn) {
+                elements.loadMoreBtn.disabled = true;
+            }
+            
+            // Show loading cards while fetching
+            showLoadingCards(elements.grid, CONFIG.POKEMON_PER_PAGE);
+            
             const existingPokemonIds = new Set(state.allPokemon.map(pokemon => pokemon.id));
 
             const nextPokemonList = await api.fetchPokemonList(
@@ -182,6 +189,7 @@ function createPokedexApp() {
 
             if (nextPokemonList.length === 0) {
                 state.hasMorePokemon = false;
+                removeLoadingCards(elements.grid);
                 updateLoadMoreVisibility();
                 return;
             }
@@ -196,6 +204,9 @@ function createPokedexApp() {
                 state.hasMorePokemon = false;
             }
 
+            // Remove loading cards
+            removeLoadingCards(elements.grid);
+
             const filteredPokemon = filters.applyFiltersAndSort(state.allPokemon);
             state.displayedPokemon = filteredPokemon;
 
@@ -206,9 +217,13 @@ function createPokedexApp() {
             }
         } catch (error) {
             console.error('Error loading more Pokemon:', error);
+            removeLoadingCards(elements.grid);
             window.alert('Failed to load more Pokemon. Please try again.');
         } finally {
-            hideLoading();
+            state.isLoading = false;
+            if (elements.loadMoreBtn) {
+                elements.loadMoreBtn.disabled = false;
+            }
         }
     }
 
@@ -216,14 +231,20 @@ function createPokedexApp() {
         const requestId = ++state.filterRequestId;
 
         try {
-            showLoading();
+            state.isLoading = true;
 
             let sourcePokemon = state.allPokemon;
+            let needsFetch = false;
 
             if (filterState.typeFilter !== 'all') {
                 const typeKey = filterState.typeFilter.toLowerCase();
 
                 if (!state.typeFilteredPokemon.has(typeKey)) {
+                    needsFetch = true;
+                    // Show loading cards when fetching new type data
+                    elements.grid.innerHTML = '';
+                    showLoadingCards(elements.grid, CONFIG.POKEMON_PER_PAGE);
+                    
                     const typePokemon = await api.fetchPokemonByType(typeKey);
                     state.typeFilteredPokemon.set(typeKey, typePokemon);
                     mergePokemonIntoState(typePokemon);
@@ -239,6 +260,10 @@ function createPokedexApp() {
                 return;
             }
 
+            if (needsFetch) {
+                removeLoadingCards(elements.grid);
+            }
+
             state.displayedPokemon = filteredPokemon;
             displayPokemon(filteredPokemon, false);
         } catch (error) {
@@ -246,18 +271,23 @@ function createPokedexApp() {
                 return;
             }
 
+            removeLoadingCards(elements.grid);
             console.error('Error applying filters:', error);
             window.alert('Failed to apply filters. Please try again.');
         } finally {
             if (requestId === state.filterRequestId) {
-                hideLoading();
+                state.isLoading = false;
             }
         }
     }
 
     async function loadInitialPokemon() {
         try {
-            showLoading();
+            // Show card backs while loading
+            elements.grid.innerHTML = '';
+            showLoadingCards(elements.grid, CONFIG.POKEMON_PER_PAGE);
+            hideElement(elements.loader);
+            state.isLoading = true;
 
             const pokemonList = await api.fetchPokemonList(CONFIG.POKEMON_PER_PAGE, 0);
             const detailedPokemon = await api.fetchMultiplePokemonDetails(pokemonList);
@@ -266,12 +296,15 @@ function createPokedexApp() {
             state.displayedPokemon = detailedPokemon;
             state.currentOffset = 0;
 
+            // Remove loading cards and show actual Pokemon
+            removeLoadingCards(elements.grid);
             displayPokemon(detailedPokemon);
         } catch (error) {
             console.error('Error loading initial Pokemon:', error);
+            removeLoadingCards(elements.grid);
             showNoResults();
         } finally {
-            hideLoading();
+            state.isLoading = false;
         }
     }
 
