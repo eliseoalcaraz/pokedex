@@ -49,7 +49,8 @@ function createFilters() {
             return;
         }
 
-        elements.typeSelect.innerHTML = '<option value="all">All</option>';
+        elements.typeSelect.innerHTML = '<option value="all">All Types</option>';
+        elements.typeSelect.dataset.type = 'all';
 
         POKEMON_TYPES.forEach(type => {
             const option = document.createElement('option');
@@ -131,6 +132,7 @@ function createFilters() {
 
         if (elements.typeSelect) {
             elements.typeSelect.value = DEFAULT_FILTER_STATE.typeFilter;
+            elements.typeSelect.dataset.type = 'all';
         }
 
         notifyChange();
@@ -189,7 +191,9 @@ function createFilters() {
         });
 
         elements.typeSelect?.addEventListener('change', event => {
-            updateFilterState({ typeFilter: event.target.value });
+            const value = event.target.value;
+            event.target.dataset.type = value;
+            updateFilterState({ typeFilter: value });
         });
     }
 

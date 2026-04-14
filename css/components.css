@@ -41,7 +41,7 @@
     display: flex;
     align-items: center;
     position: relative;
-    flex: 1 1 300px;
+    flex: 2 1 300px;
     min-width: 200px;
 }
 
@@ -98,7 +98,7 @@
 .filters__controls {
     display: flex;
     gap: 0.6rem;
-    flex: 1 1 auto;
+    flex: 0 0 auto;
     align-items: stretch;
 }
 
@@ -146,19 +146,20 @@
 }
 
 .filters__controls .filters__select {
-    flex: 1 1 150px;
-    min-width: 0;
+    flex: 0 0 auto;
+    width: auto;
+    min-width: 100px;
 }
 
 .filters__select {
     width: 100%;
     min-width: 0;
-    padding: 0.8rem 1rem;
+    padding: 0.8rem 2.5rem 0.8rem 1rem;
     border-radius: 0.9rem;
     appearance: none;
     background-image:
-        linear-gradient(45deg, transparent 50%, var(--color-primary) 50%),
-        linear-gradient(135deg, var(--color-primary) 50%, transparent 50%),
+        linear-gradient(45deg, transparent 50%, currentColor 50%),
+        linear-gradient(135deg, currentColor 50%, transparent 50%),
         linear-gradient(180deg, rgba(26, 32, 47, 0.96), rgba(34, 42, 61, 0.96));
     background-position:
         calc(100% - 1.15rem) calc(50% - 2px),
@@ -166,7 +167,43 @@
         0 0;
     background-size: 8px 8px, 8px 8px, 100% 100%;
     background-repeat: no-repeat;
+    transition: all var(--transition-fast);
 }
+
+/* Type-colored dropdown */
+.filters__select[data-type]:not([data-type="all"]) {
+    background-color: var(--type-color);
+    background-image:
+        linear-gradient(45deg, transparent 50%, rgba(0,0,0,0.5) 50%),
+        linear-gradient(135deg, rgba(0,0,0,0.5) 50%, transparent 50%);
+    background-position:
+        calc(100% - 1.15rem) calc(50% - 2px),
+        calc(100% - 0.8rem) calc(50% - 2px);
+    background-size: 8px 8px, 8px 8px;
+    color: #fff;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    border-color: rgba(0,0,0,0.2);
+    font-weight: 600;
+}
+
+.filters__select[data-type="normal"] { --type-color: var(--type-normal); }
+.filters__select[data-type="fire"] { --type-color: var(--type-fire); }
+.filters__select[data-type="water"] { --type-color: var(--type-water); }
+.filters__select[data-type="electric"] { --type-color: var(--type-electric); color: var(--text-dark); }
+.filters__select[data-type="grass"] { --type-color: var(--type-grass); }
+.filters__select[data-type="ice"] { --type-color: var(--type-ice); color: var(--text-dark); }
+.filters__select[data-type="fighting"] { --type-color: var(--type-fighting); }
+.filters__select[data-type="poison"] { --type-color: var(--type-poison); }
+.filters__select[data-type="ground"] { --type-color: var(--type-ground); }
+.filters__select[data-type="flying"] { --type-color: var(--type-flying); }
+.filters__select[data-type="psychic"] { --type-color: var(--type-psychic); }
+.filters__select[data-type="bug"] { --type-color: var(--type-bug); }
+.filters__select[data-type="rock"] { --type-color: var(--type-rock); }
+.filters__select[data-type="ghost"] { --type-color: var(--type-ghost); }
+.filters__select[data-type="dragon"] { --type-color: var(--type-dragon); }
+.filters__select[data-type="dark"] { --type-color: var(--type-dark); }
+.filters__select[data-type="steel"] { --type-color: var(--type-steel); }
+.filters__select[data-type="fairy"] { --type-color: var(--type-fairy); }
 
 .filters__select option {
     color: var(--text-dark);
