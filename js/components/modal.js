@@ -59,71 +59,75 @@ function createPokemonDetailHTML(pokemon) {
     }).join('');
 
     return `
-        <div class="pokemon-detail__header" style="background: ${getTypeHeaderColor(primaryType)}; color: white;">
-            <div class="pokemon-detail__hero">
-                <div class="pokemon-detail__identity">
-                    <span class="pokemon-detail__id">#${formatPokemonId(id)}</span>
-                    <h2 class="pokemon-detail__name" id="modalTitle">${capitalize(name)}</h2>
-                    <div class="pokemon-detail__types">
-                        ${typesHTML}
+        <div class="pokemon-detail">
+            <div class="pokemon-detail__layout">
+                <aside class="pokemon-detail__sidebar" style="background: ${getTypeHeaderColor(primaryType)}; color: white;">
+                    <div class="pokemon-detail__hero">
+                        <div class="pokemon-detail__identity">
+                            <span class="pokemon-detail__id">#${formatPokemonId(id)}</span>
+                            <h2 class="pokemon-detail__name" id="modalTitle">${capitalize(name)}</h2>
+                            <div class="pokemon-detail__types">
+                                ${typesHTML}
+                            </div>
+                        </div>
+                        <div class="pokemon-detail__image-container">
+                            <div class="pokemon-detail__image-bg"></div>
+                            <img 
+                                class="pokemon-detail__image" 
+                                src="${getPokemonImageUrl(id)}" 
+                                alt="${capitalize(name)}"
+                                onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png'"
+                            >
+                        </div>
+                    </div>
+                </aside>
+                
+                <div class="pokemon-detail__main">
+                    <section class="pokemon-detail__section pokemon-detail__section--stats">
+                        <h3 class="pokemon-detail__section-title">Base Stats</h3>
+                        <div class="pokemon-detail__stats">
+                            ${statsHTML}
+                        </div>
+                    </section>
+
+                    <div class="pokemon-detail__content-grid">
+                        <section class="pokemon-detail__section">
+                            <h3 class="pokemon-detail__section-title">About</h3>
+                            <div class="pokemon-detail__info-grid">
+                                <div class="pokemon-detail__info-item">
+                                    <span class="pokemon-detail__info-label">Height</span>
+                                    <span class="pokemon-detail__info-value">${formatHeight(height)}</span>
+                                </div>
+                                <div class="pokemon-detail__info-item">
+                                    <span class="pokemon-detail__info-label">Weight</span>
+                                    <span class="pokemon-detail__info-value">${formatWeight(weight)}</span>
+                                </div>
+                                <div class="pokemon-detail__info-item">
+                                    <span class="pokemon-detail__info-label">Base Exp</span>
+                                    <span class="pokemon-detail__info-value">${pokemon.base_experience || 'N/A'}</span>
+                                </div>
+                                <div class="pokemon-detail__info-item">
+                                    <span class="pokemon-detail__info-label">Total Stats</span>
+                                    <span class="pokemon-detail__info-value">${totalStats}</span>
+                                </div>
+                            </div>
+                        </section>
+                        
+                        <section class="pokemon-detail__section">
+                            <h3 class="pokemon-detail__section-title">Abilities</h3>
+                            <div class="pokemon-detail__abilities">
+                                ${abilitiesHTML}
+                            </div>
+                        </section>
+                        
+                        <section class="pokemon-detail__section pokemon-detail__section--wide">
+                            <h3 class="pokemon-detail__section-title">Weaknesses</h3>
+                            <div class="pokemon-detail__weaknesses">
+                                ${weaknessesHTML || '<span class="ability-badge">None</span>'}
+                            </div>
+                        </section>
                     </div>
                 </div>
-                <div class="pokemon-detail__image-container">
-                    <div class="pokemon-detail__image-bg"></div>
-                    <img 
-                        class="pokemon-detail__image" 
-                        src="${getPokemonImageUrl(id)}" 
-                        alt="${capitalize(name)}"
-                        onerror="this.src='https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png'"
-                    >
-                </div>
-            </div>
-        </div>
-        
-        <div class="pokemon-detail__content">
-            <div class="pokemon-detail__content-grid">
-                <section class="pokemon-detail__section">
-                    <h3 class="pokemon-detail__section-title">About</h3>
-                    <div class="pokemon-detail__info-grid">
-                        <div class="pokemon-detail__info-item">
-                            <span class="pokemon-detail__info-label">Height</span>
-                            <span class="pokemon-detail__info-value">${formatHeight(height)}</span>
-                        </div>
-                        <div class="pokemon-detail__info-item">
-                            <span class="pokemon-detail__info-label">Weight</span>
-                            <span class="pokemon-detail__info-value">${formatWeight(weight)}</span>
-                        </div>
-                        <div class="pokemon-detail__info-item">
-                            <span class="pokemon-detail__info-label">Base Exp</span>
-                            <span class="pokemon-detail__info-value">${pokemon.base_experience || 'N/A'}</span>
-                        </div>
-                        <div class="pokemon-detail__info-item">
-                            <span class="pokemon-detail__info-label">Total Stats</span>
-                            <span class="pokemon-detail__info-value">${totalStats}</span>
-                        </div>
-                    </div>
-                </section>
-                
-                <section class="pokemon-detail__section">
-                    <h3 class="pokemon-detail__section-title">Abilities</h3>
-                    <div class="pokemon-detail__abilities">
-                        ${abilitiesHTML}
-                    </div>
-                </section>
-                
-                <section class="pokemon-detail__section pokemon-detail__section--wide">
-                    <h3 class="pokemon-detail__section-title">Base Stats</h3>
-                    <div class="pokemon-detail__stats">
-                        ${statsHTML}
-                    </div>
-                </section>
-                
-                <section class="pokemon-detail__section">
-                    <h3 class="pokemon-detail__section-title">Weaknesses</h3>
-                    <div class="pokemon-detail__weaknesses">
-                        ${weaknessesHTML || '<span class="ability-badge">None</span>'}
-                    </div>
-                </section>
             </div>
         </div>
     `;
