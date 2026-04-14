@@ -1,0 +1,119 @@
+/**
+ * _layout.css - Layout Components
+ * Container, header, footer, main content area styles.
+ */
+
+/* ==========================================
+   Container
+   ========================================== */
+
+.container {
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding: 0 var(--container-padding);
+}
+
+/* ==========================================
+   Header
+   ========================================== */
+
+.header {
+    padding: 0;
+    position: relative;
+    background: rgba(35, 43, 63, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-lg);
+    padding-top: var(--spacing-md);
+    padding-bottom: var(--spacing-md);
+}
+
+.header__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.header__icon {
+    width: 48px;
+    height: 48px;
+}
+
+.header__title {
+    font-family: var(--font-family-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: var(--font-weight-bold);
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--color-primary-light);
+}
+
+.header__subtitle {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: 0.02em;
+    text-align: right;
+    opacity: 0.85;
+}
+
+/* ==========================================
+   Main Content
+   ========================================== */
+
+.main {
+    flex: 1;
+    padding: var(--spacing-lg) 0 var(--spacing-xxl);
+}
+
+/* ==========================================
+   Footer
+   ========================================== */
+
+.footer {
+    padding: 0;
+    background: rgba(35, 43, 63, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer .container {
+    padding-top: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.footer__text {
+    margin-bottom: var(--spacing-xs);
+    color: var(--text-secondary);
+}
+
+.footer__text a {
+    color: var(--color-secondary);
+    font-weight: var(--font-weight-semibold);
+}
+
+.footer__text a:hover {
+    color: var(--color-primary-light);
+}
+
+.footer__copyright {
+    font-size: var(--font-size-sm);
+    color: var(--text-muted);
+}
+
+/* ==========================================
+   Pokemon Grid
+   ========================================== */
+
+.pokemon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.15rem;
+    perspective: 1000px;
+}

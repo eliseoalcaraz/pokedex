@@ -1,0 +1,38 @@
+/**
+ * _animations.css - Animation keyframes and classes
+ */
+
+/* Spin animation for loader */
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Shimmer effect for skeleton loading */
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* Modal slide-in animation */
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(24px) scale(0.97);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Pokeball pulse animation for card back */
+@keyframes pokeball-pulse {
+    0%, 100% { transform: scale(1); opacity: 0.9; }
+    50% { transform: scale(1.05); opacity: 1; }
+}
+
+/* Pokeball loading animation (rotating) */
+@keyframes pokeball-loading {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 0.8; }
+    50% { transform: scale(1.1) rotate(180deg); opacity: 1; }
+}

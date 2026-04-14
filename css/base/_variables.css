@@ -1,0 +1,135 @@
+/**
+ * _variables.css - CSS Custom Properties (Design Tokens)
+ * All design tokens and theme variables are defined here.
+ */
+
+:root {
+    /* ==========================================
+       Colors - Primary Palette
+       ========================================== */
+    --color-primary: #f3c86b;
+    --color-primary-dark: #d59e34;
+    --color-primary-light: #fff0b8;
+    --color-secondary: #72d9e8;
+    --color-secondary-dark: #2ba9c6;
+    --color-accent: #f48d56;
+    --color-accent-strong: #e3643b;
+    --color-success: #7cd67b;
+
+    /* ==========================================
+       Colors - Backgrounds
+       ========================================== */
+    --bg-primary: #1b2232;
+    --bg-secondary: #252d41;
+    --bg-tertiary: #31384d;
+    --bg-panel: rgba(33, 40, 58, 0.88);
+    --bg-panel-soft: rgba(43, 52, 74, 0.76);
+    --bg-cream: #f4e7bb;
+    --bg-cream-soft: #f8efcf;
+    --bg-cream-strong: #e8d392;
+    --bg-dark: #151b28;
+
+    /* ==========================================
+       Colors - Text
+       ========================================== */
+    --text-primary: #fff4cb;
+    --text-secondary: #d8d0b3;
+    --text-muted: #9ea7c2;
+    --text-dark: #2d2a25;
+    --text-light: #fffaf0;
+
+    /* ==========================================
+       Colors - Pokemon Types
+       ========================================== */
+    --type-normal: #bfa66e;
+    --type-fire: #f28b4f;
+    --type-water: #67a9f6;
+    --type-electric: #f7d95c;
+    --type-grass: #78ca7a;
+    --type-ice: #86dbe1;
+    --type-fighting: #d86f63;
+    --type-poison: #b57adf;
+    --type-ground: #d5b16a;
+    --type-flying: #9aaeff;
+    --type-psychic: #ff7ca8;
+    --type-bug: #9bc65b;
+    --type-rock: #bca062;
+    --type-ghost: #8170c6;
+    --type-dragon: #6f8aff;
+    --type-dark: #7d6858;
+    --type-steel: #92a4bc;
+    --type-fairy: #f0a8d7;
+
+    /* ==========================================
+       Spacing
+       ========================================== */
+    --spacing-xs: 0.25rem;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --spacing-xl: 2rem;
+    --spacing-xxl: 3rem;
+
+    /* ==========================================
+       Border Radius
+       ========================================== */
+    --radius-sm: 0.4rem;
+    --radius-md: 0.85rem;
+    --radius-lg: 1.25rem;
+    --radius-xl: 1.85rem;
+    --radius-pill: 999px;
+    --radius-round: 50%;
+
+    /* ==========================================
+       Shadows
+       ========================================== */
+    --shadow-sm: 0 6px 16px rgba(7, 11, 19, 0.18);
+    --shadow-md: 0 18px 34px rgba(5, 8, 16, 0.28);
+    --shadow-lg: 0 28px 60px rgba(4, 7, 14, 0.42);
+    --shadow-xl: 0 34px 80px rgba(4, 7, 14, 0.55);
+    --shadow-inset: inset 0 1px 0 rgba(255, 249, 219, 0.18);
+
+    /* ==========================================
+       Borders
+       ========================================== */
+    --border-panel: 1px solid rgba(255, 241, 193, 0.14);
+    --border-gold: 1px solid rgba(243, 200, 107, 0.42);
+    --border-soft: 1px solid rgba(130, 154, 204, 0.18);
+
+    /* ==========================================
+       Transitions
+       ========================================== */
+    --transition-fast: 160ms ease;
+    --transition-normal: 260ms ease;
+    --transition-slow: 420ms ease;
+
+    /* ==========================================
+       Typography
+       ========================================== */
+    --font-family: 'Chakra Petch', 'Trebuchet MS', sans-serif;
+    --font-family-display: 'Fredoka', 'Trebuchet MS', sans-serif;
+    --font-size-xs: 0.75rem;
+    --font-size-sm: 0.875rem;
+    --font-size-md: 1rem;
+    --font-size-lg: 1.25rem;
+    --font-size-xl: 1.6rem;
+    --font-size-xxl: 2.4rem;
+    --font-weight-normal: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
+    --font-weight-bold: 700;
+
+    /* ==========================================
+       Layout
+       ========================================== */
+    --container-max-width: 1320px;
+    --container-padding: 1rem;
+
+    /* ==========================================
+       Z-Index Scale
+       ========================================== */
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-modal: 1000;
+    --z-modal-content: 1001;
+}

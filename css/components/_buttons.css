@@ -1,0 +1,63 @@
+/**
+ * _buttons.css - Button component styles
+ * Load more button and other generic buttons
+ */
+
+/* Load More Button */
+.load-more {
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-xl) 0 0;
+}
+
+.load-more__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    min-width: 220px;
+    padding: 1rem 1.4rem;
+    border-radius: 1.1rem;
+    color: var(--text-dark);
+    background:
+        linear-gradient(180deg, #ffe39d 0%, #f4c560 54%, #de9d3b 100%);
+    border: 1px solid rgba(112, 71, 17, 0.28);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 252, 231, 0.8),
+        0 16px 28px rgba(0, 0, 0, 0.26);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    transition: transform var(--transition-fast), box-shadow var(--transition-fast), filter var(--transition-fast);
+}
+
+.load-more__btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 252, 231, 0.8),
+        0 22px 36px rgba(0, 0, 0, 0.34);
+    filter: saturate(1.08);
+}
+
+.load-more__btn:active {
+    transform: translateY(0);
+}
+
+.load-more__btn:focus-visible {
+    outline: none;
+    border-color: rgba(243, 200, 107, 0.78);
+    box-shadow:
+        0 0 0 3px rgba(243, 200, 107, 0.16),
+        0 14px 28px rgba(0, 0, 0, 0.28);
+}
+
+.load-more__btn:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.load-more__icon {
+    width: 20px;
+    height: 20px;
+}

@@ -1,0 +1,42 @@
+/**
+ * main.css - Main stylesheet entry point
+ * Imports all CSS modules in the correct order
+ * 
+ * Structure:
+ * 1. Base - Variables, reset, and global styles
+ * 2. Layout - Container, header, footer, grid
+ * 3. Components - UI components
+ * 4. Utilities - Animations, helpers, responsive
+ */
+
+/* ===================
+   1. Base Styles
+   =================== */
+@import 'base/_variables.css';
+@import 'base/_reset.css';
+
+/* ===================
+   2. Layout
+   =================== */
+@import 'layout/_layout.css';
+
+/* ===================
+   3. Components
+   =================== */
+@import 'components/_filters.css';
+@import 'components/_card.css';
+@import 'components/_type-badge.css';
+@import 'components/_modal.css';
+@import 'components/_pokemon-detail.css';
+@import 'components/_card-tcg.css';
+@import 'components/_card-info.css';
+@import 'components/_buttons.css';
+@import 'components/_loader.css';
+@import 'components/_no-results.css';
+
+/* ===================
+   4. Utilities
+   =================== */
+@import 'utilities/_animations.css';
+@import 'utilities/_helpers.css';
+@import 'utilities/_responsive.css';

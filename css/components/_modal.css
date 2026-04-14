@@ -1,0 +1,140 @@
+/**
+ * _modal.css - Modal dialog component
+ * Overlay, content container, close button, and navigation
+ */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    z-index: var(--z-modal);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem;
+}
+
+.modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(6, 10, 18, 0.72);
+    backdrop-filter: blur(10px);
+}
+
+.modal__content {
+    position: relative;
+    z-index: var(--z-modal-content);
+    width: min(100%, 900px);
+    max-height: min(94vh, 860px);
+    overflow: visible;
+    border-radius: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    animation: modalSlideIn 0.32s ease;
+}
+
+.modal__body {
+    padding: 0;
+}
+
+/* Close Button */
+.modal__close {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    z-index: 3;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    color: var(--text-dark);
+    background: linear-gradient(180deg, #ffe6ac, #f1c463);
+    border: 1px solid rgba(112, 71, 17, 0.26);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    transition: transform var(--transition-fast), filter var(--transition-fast);
+}
+
+.modal__close:hover {
+    transform: translateY(-1px);
+    filter: saturate(1.06);
+}
+
+.modal__close:focus-visible {
+    outline: none;
+    border-color: rgba(243, 200, 107, 0.78);
+    box-shadow:
+        0 0 0 3px rgba(243, 200, 107, 0.16),
+        0 14px 28px rgba(0, 0, 0, 0.28);
+}
+
+.modal__close svg {
+    width: 22px;
+    height: 22px;
+    margin: auto;
+}
+
+/* Navigation */
+.modal__nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    pointer-events: none;
+    padding: 0;
+    background: none;
+}
+
+.modal__nav-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: auto;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border-radius: 50%;
+    font-size: 0;
+    transition: transform var(--transition-fast), filter var(--transition-fast), opacity var(--transition-fast);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal__nav-btn:focus-visible {
+    outline: none;
+    border-color: rgba(243, 200, 107, 0.78);
+    box-shadow:
+        0 0 0 3px rgba(243, 200, 107, 0.16),
+        0 14px 28px rgba(0, 0, 0, 0.28);
+}
+
+.modal__nav-btn span {
+    display: none;
+}
+
+.modal__nav-btn--prev {
+    margin-left: -60px;
+    background: linear-gradient(180deg, rgba(114, 217, 232, 0.94), rgba(44, 169, 198, 0.9));
+    color: #0f2430;
+}
+
+.modal__nav-btn--next {
+    margin-right: -60px;
+    background: linear-gradient(180deg, rgba(247, 149, 92, 0.96), rgba(227, 101, 59, 0.92));
+    color: #fff8ee;
+}
+
+.modal__nav-btn:hover:not(:disabled) {
+    transform: scale(1.1);
+    filter: saturate(1.08);
+}
+
+.modal__nav-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.modal__nav-btn svg {
+    width: 24px;
+    height: 24px;
+}
