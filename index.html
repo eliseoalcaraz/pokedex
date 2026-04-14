@@ -36,6 +36,10 @@
             <!-- Search and Filter Section -->
             <section class="filters" aria-label="Search and filter Pokemon">
                 <div class="filters__search">
+                    <svg class="filters__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="m21 21-4.35-4.35"></path>
+                    </svg>
                     <input 
                         type="text" 
                         id="searchInput" 
@@ -43,31 +47,20 @@
                         placeholder="Search by name or ID..."
                         aria-label="Search Pokemon"
                     >
-                    <button class="filters__search-btn" id="searchBtn" aria-label="Search">
-                        <svg class="filters__search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <path d="m21 21-4.35-4.35"></path>
-                        </svg>
-                    </button>
                 </div>
                 
                 <div class="filters__controls">
-                    <div class="filters__sort">
-                        <label for="sortSelect" class="filters__label">Sort by:</label>
-                        <select id="sortSelect" class="filters__select">
-                            <option value="id-asc">ID (Low to High)</option>
-                            <option value="id-desc">ID (High to Low)</option>
-                            <option value="name-asc">Name (A-Z)</option>
-                            <option value="name-desc">Name (Z-A)</option>
-                        </select>
-                    </div>
+                    <button class="filters__sort-btn filters__sort-btn--active" id="sortIdBtn" data-sort="id" data-direction="asc" aria-label="Sort by ID">
+                        <span class="filters__sort-label">ID</span>
+                        <span class="filters__sort-arrow">↑</span>
+                    </button>
+                    <button class="filters__sort-btn" id="sortNameBtn" data-sort="name" data-direction="asc" aria-label="Sort by Name">
+                        <span class="filters__sort-label">A-Z</span>
+                    </button>
                     
-                    <div class="filters__type">
-                        <label for="typeSelect" class="filters__label">Type:</label>
-                        <select id="typeSelect" class="filters__select">
-                            <option value="all">All Types</option>
-                        </select>
-                    </div>
+                    <select id="typeSelect" class="filters__select">
+                        <option value="all">All</option>
+                    </select>
                 </div>
             </section>
 

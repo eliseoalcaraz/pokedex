@@ -87,18 +87,14 @@
     }
 
     .filters {
+        flex-direction: column;
         padding: 0.95rem;
         border-radius: 1.45rem;
         margin-bottom: 1rem;
     }
 
     .filters__search {
-        flex-direction: column;
-    }
-
-    .filters__search-btn {
-        width: 100%;
-        height: 50px;
+        flex: 1 1 auto;
     }
 
     .filters__controls {

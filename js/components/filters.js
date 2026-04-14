@@ -24,8 +24,8 @@ function createFilters() {
 
     const elements = {
         searchInput: document.getElementById('searchInput'),
-        searchBtn: document.getElementById('searchBtn'),
-        sortSelect: document.getElementById('sortSelect'),
+        sortIdBtn: document.getElementById('sortIdBtn'),
+        sortNameBtn: document.getElementById('sortNameBtn'),
         typeSelect: document.getElementById('typeSelect')
     };
 
@@ -50,6 +50,7 @@ function createFilters() {
         }
 
         elements.typeSelect.innerHTML = '<option value="all">All Types</option>';
+        elements.typeSelect.dataset.type = 'all';
 
         POKEMON_TYPES.forEach(type => {
             const option = document.createElement('option');
@@ -121,12 +122,17 @@ function createFilters() {
             elements.searchInput.value = '';
         }
 
-        if (elements.sortSelect) {
-            elements.sortSelect.value = DEFAULT_FILTER_STATE.sortBy;
+        if (elements.sortIdBtn && elements.sortNameBtn) {
+            elements.sortIdBtn.dataset.direction = 'asc';
+            elements.sortIdBtn.querySelector('.filters__sort-arrow').textContent = '↑';
+            elements.sortIdBtn.classList.add('filters__sort-btn--active');
+            elements.sortNameBtn.querySelector('.filters__sort-label').textContent = 'A-Z';
+            elements.sortNameBtn.classList.remove('filters__sort-btn--active');
         }
 
         if (elements.typeSelect) {
             elements.typeSelect.value = DEFAULT_FILTER_STATE.typeFilter;
+            elements.typeSelect.dataset.type = 'all';
         }
 
         notifyChange();
@@ -148,16 +154,46 @@ function createFilters() {
             }
         });
 
-        elements.searchBtn?.addEventListener('click', () => {
-            updateFilterState({ searchQuery: normalizeSearchQuery(elements.searchInput?.value || '') });
+        elements.sortIdBtn?.addEventListener('click', () => {
+            const isActive = elements.sortIdBtn.classList.contains('filters__sort-btn--active');
+            const currentDir = elements.sortIdBtn.dataset.direction;
+            
+            if (isActive) {
+                // Toggle direction
+                const newDir = currentDir === 'asc' ? 'desc' : 'asc';
+                elements.sortIdBtn.dataset.direction = newDir;
+                elements.sortIdBtn.querySelector('.filters__sort-arrow').textContent = newDir === 'asc' ? '↑' : '↓';
+                updateFilterState({ sortBy: `id-${newDir}` });
+            } else {
+                // Activate this button, deactivate other
+                elements.sortIdBtn.classList.add('filters__sort-btn--active');
+                elements.sortNameBtn.classList.remove('filters__sort-btn--active');
+                updateFilterState({ sortBy: `id-${currentDir}` });
+            }
         });
 
-        elements.sortSelect?.addEventListener('change', event => {
-            updateFilterState({ sortBy: event.target.value });
+        elements.sortNameBtn?.addEventListener('click', () => {
+            const isActive = elements.sortNameBtn.classList.contains('filters__sort-btn--active');
+            const label = elements.sortNameBtn.querySelector('.filters__sort-label');
+            const currentDir = label.textContent === 'A-Z' ? 'asc' : 'desc';
+            
+            if (isActive) {
+                // Toggle direction
+                const newDir = currentDir === 'asc' ? 'desc' : 'asc';
+                label.textContent = newDir === 'asc' ? 'A-Z' : 'Z-A';
+                updateFilterState({ sortBy: `name-${newDir}` });
+            } else {
+                // Activate this button, deactivate other
+                elements.sortNameBtn.classList.add('filters__sort-btn--active');
+                elements.sortIdBtn.classList.remove('filters__sort-btn--active');
+                updateFilterState({ sortBy: `name-${currentDir}` });
+            }
         });
 
         elements.typeSelect?.addEventListener('change', event => {
-            updateFilterState({ typeFilter: event.target.value });
+            const value = event.target.value;
+            event.target.dataset.type = value;
+            updateFilterState({ typeFilter: value });
         });
     }
 
