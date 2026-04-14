@@ -112,8 +112,17 @@
         gap: 0.9rem;
     }
 
-    .pokemon-card {
+    .pokemon-card-wrapper {
         min-height: 315px;
+    }
+
+    .pokemon-card,
+    .pokemon-card__front {
+        min-height: 315px;
+        border-radius: 1.45rem;
+    }
+
+    .pokemon-card__back {
         border-radius: 1.45rem;
     }
 
@@ -241,7 +250,12 @@
         gap: 0.75rem;
     }
 
-    .pokemon-card {
+    .pokemon-card-wrapper {
+        min-height: 288px;
+    }
+
+    .pokemon-card,
+    .pokemon-card__front {
         min-height: 288px;
     }
 

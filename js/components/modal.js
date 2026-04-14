@@ -360,7 +360,7 @@ function createPokemonModal() {
         document.body.style.overflow = '';
         document.removeEventListener('keydown', handleModalKeydown);
 
-        const firstCard = document.getElementById('pokemonGrid')?.querySelector('.pokemon-card');
+        const firstCard = document.getElementById('pokemonGrid')?.querySelector('.pokemon-card-wrapper');
         firstCard?.focus();
     }
 
