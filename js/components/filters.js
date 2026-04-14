@@ -24,7 +24,6 @@ function createFilters() {
 
     const elements = {
         searchInput: document.getElementById('searchInput'),
-        searchBtn: document.getElementById('searchBtn'),
         sortIdBtn: document.getElementById('sortIdBtn'),
         sortNameBtn: document.getElementById('sortNameBtn'),
         typeSelect: document.getElementById('typeSelect')
@@ -151,10 +150,6 @@ function createFilters() {
                 event.preventDefault();
                 updateFilterState({ searchQuery: normalizeSearchQuery(event.target.value) });
             }
-        });
-
-        elements.searchBtn?.addEventListener('click', () => {
-            updateFilterState({ searchQuery: normalizeSearchQuery(elements.searchInput?.value || '') });
         });
 
         elements.sortIdBtn?.addEventListener('click', () => {

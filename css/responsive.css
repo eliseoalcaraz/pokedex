@@ -95,12 +95,6 @@
 
     .filters__search {
         flex: 1 1 auto;
-        flex-direction: column;
-    }
-
-    .filters__search-btn {
-        width: 100%;
-        height: 50px;
     }
 
     .filters__controls {
