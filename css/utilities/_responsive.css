@@ -1,7 +1,9 @@
 /**
- * responsive.css - Responsive adjustments for the themed layout
+ * _responsive.css - Responsive breakpoint styles
+ * All media queries for the Pokedex application
  */
 
+/* Large tablets and small desktops */
 @media screen and (max-width: 1024px) {
     .header .container {
         align-items: flex-start;
@@ -63,6 +65,7 @@
     }
 }
 
+/* Tablets */
 @media screen and (max-width: 768px) {
     :root {
         --container-padding: 0.85rem;
@@ -217,8 +220,49 @@
     .modal__nav {
         padding: 0.85rem 1rem 1rem;
     }
+
+    /* Two-card modal layout */
+    .pokemon-cards-wrapper {
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .pokemon-card-tcg,
+    .pokemon-info-card {
+        width: 100%;
+        max-width: 380px;
+    }
+
+    .pokemon-info-card {
+        order: -1;
+    }
+
+    .pokemon-info-card__row {
+        grid-template-columns: 1fr;
+    }
+
+    .modal__nav-btn--prev {
+        margin-left: -24px;
+    }
+
+    .modal__nav-btn--next {
+        margin-right: -24px;
+    }
+
+    .modal__nav-btn {
+        width: 40px;
+        height: 40px;
+    }
+
+    .modal__nav-btn svg {
+        width: 20px;
+        height: 20px;
+    }
 }
 
+/* Mobile phones */
 @media screen and (max-width: 520px) {
     :root {
         --container-padding: 0.7rem;
@@ -378,8 +422,66 @@
         width: 78px;
         height: 78px;
     }
+
+    /* Two-card modal - small phones */
+    .pokemon-cards-wrapper {
+        padding: 0.75rem;
+    }
+
+    .pokemon-card-tcg,
+    .pokemon-info-card {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .pokemon-info-card__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .modal__nav-btn--prev {
+        margin-left: -20px;
+    }
+
+    .modal__nav-btn--next {
+        margin-right: -20px;
+    }
+
+    .modal__nav-btn {
+        width: 36px;
+        height: 36px;
+    }
 }
 
+@media screen and (max-width: 480px) {
+    .pokemon-cards-wrapper {
+        padding: 0.75rem;
+    }
+
+    .pokemon-card-tcg,
+    .pokemon-info-card {
+        width: 100%;
+        max-width: 360px;
+    }
+
+    .pokemon-info-card__stats {
+        grid-template-columns: 1fr;
+    }
+
+    .modal__nav-btn--prev {
+        margin-left: -20px;
+    }
+
+    .modal__nav-btn--next {
+        margin-right: -20px;
+    }
+
+    .modal__nav-btn {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Large screens */
 @media screen and (min-width: 1400px) {
     .pokemon-grid {
         grid-template-columns: repeat(5, minmax(0, 1fr));
