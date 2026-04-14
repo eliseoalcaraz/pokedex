@@ -364,17 +364,15 @@ ol {
 }
 
 .footer {
-    padding: var(--spacing-lg) 0 var(--spacing-xl);
+    padding: 0;
+    background: rgba(35, 43, 63, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer .container {
     padding-top: var(--spacing-lg);
     padding-bottom: var(--spacing-lg);
     text-align: center;
-    border-radius: var(--radius-xl);
-    background: linear-gradient(180deg, rgba(29, 36, 52, 0.92), rgba(20, 26, 39, 0.96));
-    border: var(--border-panel);
-    box-shadow: var(--shadow-md);
 }
 
 .footer__text {
