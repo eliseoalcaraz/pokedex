@@ -119,39 +119,10 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    background:
-        radial-gradient(circle at 18% 20%, rgba(115, 217, 232, 0.22), transparent 22%),
-        radial-gradient(circle at 82% 16%, rgba(243, 200, 107, 0.16), transparent 20%),
-        radial-gradient(circle at 50% 88%, rgba(244, 141, 86, 0.16), transparent 24%),
-        linear-gradient(180deg, #24304f 0%, #1a2233 22%, #151b28 100%);
+    background: #1a2233;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    position: relative;
-    isolation: isolate;
     overflow-x: hidden;
-}
-
-body::before,
-body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: -1;
-}
-
-body::before {
-    background:
-        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 36px 36px;
-    -webkit-mask-image: radial-gradient(circle at center, black 35%, transparent 92%);
-    mask-image: radial-gradient(circle at center, black 35%, transparent 92%);
-}
-
-body::after {
-    background:
-        radial-gradient(circle at center, transparent 54%, rgba(0, 0, 0, 0.26) 100%);
 }
 
 img,
@@ -222,8 +193,10 @@ ol {
 }
 
 .header {
-    padding: 1.25rem 0 0.5rem;
+    padding: 0;
     position: relative;
+    background: rgba(35, 43, 63, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .header .container {
@@ -233,29 +206,6 @@ ol {
     gap: var(--spacing-lg);
     padding-top: var(--spacing-md);
     padding-bottom: var(--spacing-md);
-    background: linear-gradient(180deg, rgba(45, 55, 79, 0.92), rgba(31, 38, 56, 0.92));
-    border: var(--border-panel);
-    box-shadow: var(--shadow-lg), var(--shadow-inset);
-    border-radius: var(--radius-xl);
-    backdrop-filter: blur(14px);
-    position: relative;
-    overflow: hidden;
-}
-
-.header .container::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-        radial-gradient(circle at left center, rgba(255, 209, 114, 0.18), transparent 28%),
-        linear-gradient(90deg, rgba(114, 217, 232, 0.16), transparent 50%);
-    pointer-events: none;
-}
-
-.header__logo,
-.header__subtitle {
-    position: relative;
-    z-index: 1;
 }
 
 .header__logo {
@@ -265,42 +215,26 @@ ol {
 }
 
 .header__icon {
-    width: 56px;
-    height: 56px;
-    padding: 0.6rem;
-    border-radius: 1.1rem;
-    background: linear-gradient(180deg, rgba(255, 241, 197, 0.2), rgba(255, 241, 197, 0.06));
-    border: var(--border-gold);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28);
-    animation: floatBadge 3.2s ease-in-out infinite;
-}
-
-@keyframes floatBadge {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-4px); }
+    width: 48px;
+    height: 48px;
 }
 
 .header__title {
     font-family: var(--font-family-display);
-    font-size: clamp(2rem, 4vw, 3.4rem);
+    font-size: clamp(2rem, 4vw, 3rem);
     font-weight: var(--font-weight-bold);
-    line-height: 0.95;
-    letter-spacing: 0.04em;
+    line-height: 1;
+    letter-spacing: 0.02em;
     color: var(--color-primary-light);
-    text-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
 }
 
 .header__subtitle {
-    max-width: 360px;
-    padding: 0.85rem 1.1rem;
-    border-radius: var(--radius-lg);
-    background: linear-gradient(180deg, rgba(241, 199, 100, 0.2), rgba(96, 214, 228, 0.12));
-    border: var(--border-gold);
     color: var(--text-secondary);
-    font-size: var(--font-size-sm);
-    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-normal);
+    letter-spacing: 0.02em;
     text-align: right;
-    box-shadow: var(--shadow-sm);
+    opacity: 0.85;
 }
 
 .main {
@@ -430,17 +364,15 @@ ol {
 }
 
 .footer {
-    padding: var(--spacing-lg) 0 var(--spacing-xl);
+    padding: 0;
+    background: rgba(35, 43, 63, 0.95);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .footer .container {
     padding-top: var(--spacing-lg);
     padding-bottom: var(--spacing-lg);
     text-align: center;
-    border-radius: var(--radius-xl);
-    background: linear-gradient(180deg, rgba(29, 36, 52, 0.92), rgba(20, 26, 39, 0.96));
-    border: var(--border-panel);
-    box-shadow: var(--shadow-md);
 }
 
 .footer__text {
